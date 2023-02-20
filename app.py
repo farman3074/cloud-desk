@@ -1,7 +1,18 @@
 from flask import Flask,render_template,request
-import datafile
+from sqlalchemy import text
+#import datafile
+from database import engine
 
 app = Flask(__name__)
+
+def load_members_from_db():
+  with engine.connect() as conn:
+    result = conn.execute(text("select * from members"))
+    mem_list = result.all()
+    members = []
+    for row in mem_list:
+      members.append(row._mapping)
+    return members
 
 @app.route("/")
 def hello_world():
@@ -22,7 +33,8 @@ def show_dashbaord():
 
 @app.route("/members")
 def show_members():
-  return render_template("members.html", title="Members", members=datafile.members)
+  members = load_members_from_db()
+  return render_template("members.html", title="Members", members=members)
 
 @app.route("/spaces")
 def show_spaces():
