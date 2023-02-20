@@ -1,18 +1,9 @@
 from flask import Flask,render_template,request
-from sqlalchemy import text
 #import datafile
-from database import engine
+from database import load_members_from_db
 
 app = Flask(__name__)
 
-def load_members_from_db():
-  with engine.connect() as conn:
-    result = conn.execute(text("select * from members"))
-    mem_list = result.all()
-    members = []
-    for row in mem_list:
-      members.append(row._mapping)
-    return members
 
 @app.route("/")
 def hello_world():
