@@ -1,0 +1,11 @@
+
+{% for member in members %}
+    <tr>
+      <th scope="row">{{ member['memberID'] }}</th>
+      <td>{{ member['memberCompany'] }}</td>
+      <td>{{ member['memberName'] }}</td>
+      <td>{{ member['memberPhone'] }}</td>
+      <td>{{ member['memberEmail'] }}</td>
+      <td><a href="#" >View</a> | <a href="#" >Edit</a></div> | <a href="#" >Delete</a></div></td>
+    </tr>  
+{% endfor %}

@@ -1,4 +1,5 @@
 from flask import Flask,render_template,request
+import datafile
 
 app = Flask(__name__)
 
@@ -21,7 +22,7 @@ def show_dashbaord():
 
 @app.route("/members")
 def show_members():
-  return render_template("members.html", title="Members")
+  return render_template("members.html", title="Members", members=datafile.members)
 
 @app.route("/spaces")
 def show_spaces():
