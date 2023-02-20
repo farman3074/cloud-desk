@@ -1,6 +1,6 @@
-from flask import Flask,render_template,request
+from flask import Flask,render_template,request,jsonify
 #import datafile
-from database import load_members_from_db
+from database import load_members_from_db,load_member_from_db
 
 app = Flask(__name__)
 
@@ -26,6 +26,11 @@ def show_dashbaord():
 def show_members():
   members = load_members_from_db()
   return render_template("members.html", title="Members", members=members)
+
+@app.route("/member/<id>")
+def show_member(id):
+  member = load_member_from_db(id)
+  return jsonify(member)
 
 @app.route("/spaces")
 def show_spaces():

@@ -14,3 +14,17 @@ def load_members_from_db():
     for row in mem_list:
       members.append(row._mapping)
     return members
+
+def load_member_from_db(id):
+  with engine.connect() as conn:
+    query = f"select * from members where ID = {id}"
+    result = conn.execute(text(query))
+    rows = result.all()
+    if len(rows) == 0:
+      return None
+    else:
+      return rows[0]._mapping
+      
+      
+    
+    
