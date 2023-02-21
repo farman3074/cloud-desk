@@ -10,7 +10,8 @@
   <body>
     <div class="container">
       <h3>{{title}}</h3>
-      <form action="/commitmember" method="post">
+      
+      <form action="/commitmember" method="POST">
       <table class="table table-striped">
         <thead class="border border-warning">
           <tr>
@@ -21,33 +22,44 @@
         <tbody>
           <tr>
             <th scope="row">Member ID</th>
-            <td><input type="text" class="form-control" id="idInput" placeholder="{{ member['ID'] }}" readonly></td>
+            <td><input type="text" class="form-control" name = 'idInput' value="{{ member['ID'] }}" readonly></td>
           <tr>
             <th scope="row">Company</th>
-            <td><input type="text" class="form-control" id="companyInput" placeholder="{{ member['company'] }}"></td>
+            <td><input type="text" class="form-control" name="companyInput" value="{{ member['company'] }}"></td>
           <tr>
             <th scope="row">Name</th>
-           <td><input type="text" class="form-control" id="nameInput" placeholder="{{ member['name'] }}"></td>
+           <td><input type="text" class="form-control" name="nameInput" value="{{ member['name'] }}"></td>
           <tr>
             <th scope="row">Phone</th>
-           <td><input type="tel" class="form-control" id="phoneInput" pattern="[0-9]{4}-[0-9]{3}-[0-9]{7}" placeholder="{{ member['phone'] }}"></td>
+           <td><input type="tel" class="form-control" name="phoneInput" " value="{{ member['phone'] }}"></td>
           <tr>
             <th scope="row">Email</th>
-            <td><input type="email" class="form-control" id="emailInput" placeholder="{{ member['email'] }}"></td>
+            <td><input type="email" class="form-control" name="emailInput" value="{{ member['email'] }}"></td>
           <tr>
             <th scope="row">Address</th>
-            <td><input type="text" class="form-control" id="addressInput" placeholder="{{ member['address'] }}"></td>
+            <td><input type="text" class="form-control" name="addressInput" value="{{ member['address'] }}"></td>
           <tr>
             <th scope="row">Nature of Business</th>
-            <td><input type="text" class="form-control" id="natureInput" placeholder="{{ member['nature'] }}"></td>
+            <td><input type="text" class="form-control" name="natureInput" value="{{ member['nature'] }}"></td>
           <tr>
             <th scope="row">Created On</th>
             <td>Auto Generated</td>
         </tbody>
       </table>
-      <button type="submit" class="btn btn-warning">Submit</button>
-        <a class="btn btn-primary" href="/members" role="button">BACK</a>
+      <button type="submit" class="btn btn-primary">Submit</button>
+       <a class="btn btn-primary" href="/members" role="button">BACK</a> 
       </form>
+
+      <!--
+      <form action= "/commitmember" method="POST">
+  <table>
+  <label for="fname">First name:</label>
+  <input type="text" id="fname" name="fname" value="John"><br><br>
+  <label for="lname">Last name:</label>
+  <input type="text" id="lname" name="lname" value="Doe"><br><br>
+  <input type="submit" value="Submit">
+    </table>
+</form> -->
     </div>
   </body>
 

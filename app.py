@@ -39,8 +39,10 @@ def edit_member(id):
 
 @app.route("/commitmember",methods =["POST"])
 def commit_member():
-  result = commit_member_to_db(request.form)
-  return redirect(url_for(f"/viewmember/{request.form.get('idInput')}"))
+  query = "update members set name ='" + request.form.get('nameInput') + "', company = '" + request.form.get('companyInput') + "', email ='" + request.form.get('emailInput') + "', phone = '" +  request.form.get('phoneInput') + "', nature = '" + request.form.get('natureInput') + "', address = '" + request.form.get('addressInput') + "' where ID= " + request.form.get('idInput')
+  result = commit_member_to_db(query)
+  return redirect(f"/viewmember/{request.form.get('idInput')}")
+  
   
 @app.route("/spaces")
 def show_spaces():

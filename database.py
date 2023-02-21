@@ -25,9 +25,8 @@ def load_member_from_db(id):
     else:
       return rows[0]._mapping
 
-def commit_member_to_db(form):
+def commit_member_to_db(query):
   with engine.connect() as conn:
-    query = f"update members set name = {form['nameInput']}, company = {form['companyInput']}, email = {form['emailInput']}, phone =  {form.get('phoneInput')}, nature = {form.get('natureInput')}, address = {form.get('addressInput')} where ID= {form.get('idInput')}"
     result = conn.execute(text(query))
     return result
     
