@@ -30,7 +30,7 @@ def show_members():
 @app.route("/member/<id>")
 def show_member(id):
   member = load_member_from_db(id)
-  return jsonify(member)
+  return render_template("formmember.html", title="View Member",member=member)
 
 @app.route("/spaces")
 def show_spaces():
