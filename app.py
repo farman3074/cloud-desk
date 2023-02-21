@@ -1,6 +1,6 @@
-from flask import Flask,render_template,request,jsonify
+from flask import Flask,render_template,request,jsonify,redirect,url_for
 #import datafile
-from database import load_members_from_db,load_member_from_db
+from database import load_members_from_db,load_member_from_db, commit_member_to_db
 
 app = Flask(__name__)
 
@@ -27,11 +27,21 @@ def show_members():
   members = load_members_from_db()
   return render_template("members.html", title="Members", members=members)
 
-@app.route("/member/<id>")
+@app.route("/viewmember/<id>")
 def show_member(id):
   member = load_member_from_db(id)
-  return render_template("formmember.html", title="View Member",member=member)
+  return render_template("viewmember.html", title="View Member",member=member)
 
+@app.route("/editmember/<id>")
+def edit_member(id):
+  member = load_member_from_db(id)
+  return render_template("editmember.html", title="Edit Member",member=member)
+
+@app.route("/commitmember",methods =["POST"])
+def commit_member():
+  result = commit_member_to_db(request.form)
+  return redirect(url_for(f"/viewmember/{request.form.get('idInput')}"))
+  
 @app.route("/spaces")
 def show_spaces():
   return render_template("spaces.html", title="Spaces")
