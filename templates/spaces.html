@@ -11,7 +11,23 @@
   <body>
     {% include 'header.html' %}
     <div class="container">
-  
+      <table class="table table-striped">
+        <thead class="border border-warning">
+          <tr>
+            <th scope="col"><h5>Name</h5></th>
+            <th scope="col"><h5>Type</h5></th>
+            <th scope="col"><h5>Floor</h5></th>
+            <th scope="col"><h5>Seats</h5></th>
+            <th scope="col"><h5>Area</h5></th>
+            <th scope="col"><h5>Available</h5></th>
+            <th scope="col"><a class="btn btn-warning" href="#" role="button">Add Space</a></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% include 'tablespace.html' %}
+        </tbody>
+      </table>
+       {% include 'footer.html' %}
     </div>
   </body>
 

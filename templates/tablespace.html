@@ -1,0 +1,12 @@
+
+{% for space in spaces %}
+    <tr>
+      <th scope="row">{{ space['name'] }}</th>
+      <td>{{ space['type'] }}</td>
+      <td>{{ space['floor'] }}</td>
+      <td>{{ space['seats'] }}</td>
+      <td>{{ space['area'] }}</td>
+      <td>{{ space['isempty'] }}</td>
+      <td><a href="/viewspace/{{space['ID']}}">View</a> | <a href="/editspace/{{space['ID']}}" >Edit</a></div> | <a href="#" >Delete</a></div></td>
+   
+{% endfor %}  
