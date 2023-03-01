@@ -7,6 +7,13 @@
       <td>{{ space['seats'] }}</td>
       <td>{{ space['area'] }}</td>
       <td>{{ space['isempty'] }}</td>
-      <td><a href="/viewspace/{{space['ID']}}">View</a> | <a href="/editspace/{{space['ID']}}" >Edit</a></div> | <a href="#" >Delete</a></div></td>
-   
+      <td><a href="/viewspace/{{space['ID']}}">View</a> | <a href="/editspace/{{space['ID']}}" >Edit</a></div> | 
+{% if(space['isempty'] == 'Yes')  %}
+  <a href="/bookspace/{{space['ID']}}" >BOOK</a></div></td>
+  {% endif %}
+<!--
+    {% if(space['isempty'] == 'Yes')  %}
+      <td><a class="btn btn-warning" href="#" role="button">BOOK</a></td>
+    {% endif %}
+-->
 {% endfor %}  

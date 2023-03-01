@@ -1,5 +1,6 @@
 from flask import Flask,render_template,request,jsonify,redirect,url_for
 #import datafile
+from datetime import datetime
 from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db
 
 app = Flask(__name__)
@@ -63,6 +64,13 @@ def commit_space():
   result = commit_space_to_db(query)
   return redirect(f"/viewspace/{request.form.get('idInput')}")
 
+@app.route("/bookspace/<id>")
+def book_space(id):
+  space = load_space_from_db(id)
+  members = load_members_from_db()
+  currentdate = datetime.now().date()
+  return render_template("bookspace.html", title = "Book Space", space=space, members=members, currentdate = currentdate)
+  
 
 @app.route("/invoicing")
 def show_invoices():
