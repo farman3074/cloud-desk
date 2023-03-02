@@ -54,3 +54,15 @@ def commit_space_to_db(query):
   with engine.connect() as conn:
     result = conn.execute(text(query))
     return result
+
+def commit_booking_to_db(query):
+  with engine.connect() as conn:
+    result = conn.execute(text(query))
+    result = conn.execute(text("select ID from bookings ORDER BY ID DESC LIMIT 1"))
+    return result['ID']
+
+def commit_ledger_to_db(query):
+  with engine.connect() as conn:
+    result = conn.execute(text(query))
+    return result
+  

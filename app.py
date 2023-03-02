@@ -1,7 +1,7 @@
 from flask import Flask,render_template,request,jsonify,redirect,url_for
 #import datafile
 from datetime import datetime
-from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db
+from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_ledger_to_db
 
 app = Flask(__name__)
 
@@ -69,7 +69,20 @@ def book_space(id):
   space = load_space_from_db(id)
   members = load_members_from_db()
   currentdate = datetime.now().date()
-  return render_template("bookspace.html", title = "Book Space", space=space, members=members, currentdate = currentdate)
+  return render_template("bookspace.html", title = "Book " + space['name'], space=space, members=members, currentdate = currentdate)
+
+@app.route("/commitbooking",methods =["POST"])
+def commit_booking():
+  query = "insert into bookings (memberID, spaceID, bookFrom, bookTo, bookRate, rateType, bookDate) Values (" + request.form.get('memberInput') +"," + request.form.get('spaceInput')  + "," + request.form.get('startInput') + "," + request.form.get('endInput') + "," + request.form.get('rateInput') + "," + request.form.get('typeInput') + "," + datetime.now() + ")"
+  bookingID = commit_booking_to_db(query)
+  query = "insert into ledger (entryDate, bookingID, entryType, entryDesc, entryValue) values (" + datetime.now() + "," + bookingID + "," + ", 'SECURITY','Security Deposit'," + request.form.get('securityInput')
+  result = commit_ledger_to_db(query)
+  query = "insert into ledger (entryDate, bookingID, entryType, entryDesc, entryValue) values (" + datetime.now() + "," + bookingID + "," + ", 'ADVANCE','Advance Deposit'," + request.form.get('advanceInput')
+  result = commit_ledger_to_db(query)
+  query = "update spaces set isempty ='No' where ID = " + request.form.get('spaceInput')
+  result = commit_space_to_db(query)
+  return redirect("/spaces")
+  
   
 
 @app.route("/invoicing")

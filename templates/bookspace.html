@@ -66,23 +66,46 @@
              <tr>
               <th scope="row">Start Date</th>
               <td>
-                 <input type="date" name="startInput" placeholder="dd-mm-yyyy" value=""
+                 <input type="date" class="form-control" name="startInput" placeholder="dd-mm-yyyy" value=""
         min="{{ currentdate }}" max="2030-12-31">
               </td>
                <tr>
               <th scope="row">End Date</th>
               <td>
-                 <input type="date" name="endInput" placeholder="dd-mm-yyyy" value=""
+                 <input type="date" class="form-control" name="endInput" placeholder="dd-mm-yyyy" value=""
         min="{{ currentdate }}" max="2030-12-31">
               </td>
                  <tr>
-              <th scope="row">Monthly Amount</th>
+              <th scope="row">Booking Rate</th>
               <td>
-                 <input type="text" name="amountInput">
+                 <input type="text" class="form-control" name="rateInput" >
               </td>
-                   
+                      <tr>
+              <th scope="row">Rate Type</th>
+              <td>
+                <select class="form-select" aria-label="Default select example" name = 'ratetypeInput' >
+              <option selected>Choose Rate Type</option>
+                  <option value = 'MONTHLY'> MONTHLY </option>
+                   <option value = 'MONTHLY'> WEEKLY </option>
+                   <option value = 'MONTHLY'> DAILY </option>
+                   <option value = 'MONTHLY'> HOURLY </option>
+                </select>
+              </td>
+              <tr>
+                <th scope="row">Advance Amount</th>
+              <td>
+                 <input type="text" class="form-control" name="advanceInput">
+              </td>
+                <tr>
+                <th scope="row">Security Deposit</th>
+              <td>
+                 <input type="text" name="securityInput" class="form-control">
+              </td>
           </tbody>
         </table>
+         <input type="hidden" id="spacetInput" name="spaceInput" value={{ space['ID'] }}>
+        <button type="submit" class="btn btn-primary">BOOK</button>
+       <a class="btn btn-primary" href="/spaces" role="button">CANCEL</a> 
       </form>
     </div>
   </body>
