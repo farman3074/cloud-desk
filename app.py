@@ -73,16 +73,16 @@ def book_space(id):
 
 @app.route("/commitbooking",methods =["POST"])
 def commit_booking():
-  query = "insert into bookings (memberID, spaceID, bookFrom, bookTo, bookRate, rateType, bookDate) Values (" + request.form.get('memberInput') +"," + request.form.get('spaceInput')  + "," + request.form.get('startInput') + "," + request.form.get('endInput') + "," + request.form.get('rateInput') + "," + request.form.get('typeInput') + "," + datetime.now() + ")"
+  query = "insert into bookings (memberID, spaceID, bookFrom, bookTo, bookRate, rateType, bookDate) Values (" + request.form.get('memberInput') +"," + request.form.get('spaceInput')  + ",'" + request.form.get('startInput') + "','" + request.form.get('endInput') + "'," + request.form.get('rateInput') + ",'" + request.form.get('ratetypeInput') + "','" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "')"
   bookingID = commit_booking_to_db(query)
-  query = "insert into ledger (entryDate, bookingID, entryType, entryDesc, entryValue) values (" + datetime.now() + "," + bookingID + "," + ", 'SECURITY','Security Deposit'," + request.form.get('securityInput')
+  query = "insert into ledger (entryDate, bookingID, entryType, entryDesc, entryValue) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "'," + str(bookingID['ID']) + ", 'SECURITY','Security Deposit'," + request.form.get('securityInput')+")"
   result = commit_ledger_to_db(query)
-  query = "insert into ledger (entryDate, bookingID, entryType, entryDesc, entryValue) values (" + datetime.now() + "," + bookingID + "," + ", 'ADVANCE','Advance Deposit'," + request.form.get('advanceInput')
+  query = "insert into ledger (entryDate, bookingID, entryType, entryDesc, entryValue) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "'," + str(bookingID['ID']) + ", 'ADVANCE','Advance Deposit'," + request.form.get('advanceInput') +")"
   result = commit_ledger_to_db(query)
   query = "update spaces set isempty ='No' where ID = " + request.form.get('spaceInput')
   result = commit_space_to_db(query)
   return redirect("/spaces")
-  
+  #return request.form.get('ratetypeInput')
   
 
 @app.route("/invoicing")

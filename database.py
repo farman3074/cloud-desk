@@ -59,7 +59,8 @@ def commit_booking_to_db(query):
   with engine.connect() as conn:
     result = conn.execute(text(query))
     result = conn.execute(text("select ID from bookings ORDER BY ID DESC LIMIT 1"))
-    return result['ID']
+    rows = result.all()
+    return rows[0]._mapping
 
 def commit_ledger_to_db(query):
   with engine.connect() as conn:
