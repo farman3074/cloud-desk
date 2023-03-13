@@ -1,7 +1,7 @@
 from flask import Flask,render_template,request,jsonify,redirect,url_for
 #import datafile
 from datetime import datetime
-from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db
+from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db
 
 app = Flask(__name__)
 
@@ -90,11 +90,18 @@ def commit_booking():
   return redirect("/spaces")
   #return request.form.get('ratetypeInput')
   
-
 @app.route("/invoicing")
 def show_invoices():
   invoices = load_invoices_from_db()
   return render_template("invoicing.html", title="Invoicing", invoices=invoices)
+
+@app.route("/viewinvoice/<id>")
+def show_invoice(id):
+  invoice = load_invoice_from_db(id)
+  member = load_member_from_db(invoice['memberID'])
+  invoiceLIs = load_invoiceLI_from_db(id)
+  return render_template("viewinvoice.html", title="Customer Invoice", invoice=invoice,member=member,invoiceLI=invoiceLIs)
+  
 
 @app.route("/reporting")
 def show_reporting():

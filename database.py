@@ -92,3 +92,23 @@ def load_invoices_from_db():
     for row in inv_list:
       invoices.append(row._mapping)
     return invoices
+
+def load_invoice_from_db(id):
+  with engine.connect() as conn:
+    query = f"select * from invoices where ID = {id}"
+    result = conn.execute(text(query))
+    rows = result.all()
+    if len(rows) == 0:
+      return None
+    else:
+      return rows[0]._mapping
+
+def load_invoiceLI_from_db(id):
+  with engine.connect() as conn:
+    query = f"select * from invoiceLI where invoiceID = {id}"
+    result = conn.execute(text(query))
+    rows = result.all()
+    LIs = []
+    for row in rows:
+      LIs.append(row._mapping)
+    return LIs
