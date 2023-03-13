@@ -62,7 +62,14 @@ def commit_booking_to_db(query):
     rows = result.all()
     return rows[0]._mapping
 
-def commit_ledger_to_db(query):
+def commit_invoice_to_db(query):
+  with engine.connect() as conn:
+    result = conn.execute(text(query))
+    result = conn.execute(text("select ID from invoices ORDER BY ID DESC LIMIT 1"))
+    rows = result.all()
+    return rows[0]._mapping
+  
+def commit_query_to_db(query):
   with engine.connect() as conn:
     result = conn.execute(text(query))
     return result
@@ -77,4 +84,11 @@ def load_bookings_from_db(id):
       bookings.append(row._mapping)
     return bookings
     
-      
+def load_invoices_from_db():
+  with engine.connect() as conn:
+    result = conn.execute(text("select invoices.ID,invoicedate,duedate,header,invoiceamt,taxamount,discount,amtwithtax,ispaid,members.name from invoices,members where invoices.memberID = members.ID"))
+    inv_list = result.all()
+    invoices = []
+    for row in inv_list:
+      invoices.append(row._mapping)
+    return invoices

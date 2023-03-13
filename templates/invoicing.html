@@ -11,7 +11,26 @@
   <body>
     {% include 'header.html' %}
     <div class="container">
-  
+      <table class="table table-striped">
+        <thead class="border border-warning">
+          <tr>
+            <th scope="col"><h5>Member</h5></th>
+            <th scope="col"><h5>Header</h5></th>
+            <th scope="col"><h5>Invoice Date</h5></th>
+            <th scope="col"><h5>Due Date</h5></th>
+            <th scope="col"><h5>Invoice Amt</h5></th>
+            <th scope="col"><h5>Tax Amount</h5></th>
+            <th scope="col"><h5>Discount</h5></th>
+            <th scope="col"><h5>Total</h5></th>
+            <th scope="col"><h5>Paid</h5></th>
+            <th scope="col"><a class="btn btn-warning" href="#" role="button">New Invoice</a></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% include 'tableinvoice.html' %}
+        </tbody>
+      </table>
+       {% include 'footer.html' %}
     </div>
   </body>
 
