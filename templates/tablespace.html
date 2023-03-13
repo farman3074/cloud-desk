@@ -8,9 +8,9 @@
       <td>{{ space['area'] }}</td>
       <td>{{ space['isempty'] }}</td>
       <td><a href="/viewspace/{{space['ID']}}">View</a> | <a href="/editspace/{{space['ID']}}" >Edit</a></div> | 
-{% if(space['isempty'] == 'Yes')  %}
-  <a href="#" >BOOK</a></div></td>
-  {% endif %}
+
+  <a href="/bookspace/{{space['ID']}}" >BOOK</a></div></td>
+
 <!--
     {% if(space['isempty'] == 'Yes')  %}
       <td><a class="btn btn-warning" href="#" role="button">BOOK</a></td>

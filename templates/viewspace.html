@@ -43,5 +43,22 @@
       </table>
       <a class="btn btn-warning" href="/spaces" role="button">BACK</a>
     </div>
+    <div class ="container">
+      <h3>Booking History</h3>
+      <table class="table table-striped">
+        <thead class="border border-warning">
+          <tr>
+            <th scope="col"><h5>Booked By</h5></th>
+            <th scope="col"><h5>From</h5></th>
+            <th scope="col"><h5>To</h5></th>
+            <th scope="col"><h5>Booked On</h5></th>
+            <th scope="col"><h5>Booking Rate</h5></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% include 'tablebooking.html' %}
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>

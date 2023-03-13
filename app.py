@@ -1,7 +1,7 @@
 from flask import Flask,render_template,request,jsonify,redirect,url_for
 #import datafile
 from datetime import datetime
-from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_ledger_to_db
+from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_ledger_to_db,load_bookings_from_db
 
 app = Flask(__name__)
 
@@ -51,7 +51,8 @@ def show_spaces():
 @app.route("/viewspace/<id>")
 def show_space(id):
   space = load_space_from_db(id)
-  return render_template("viewspace.html", title="View Space",space=space)
+  bookings = load_bookings_from_db(id)
+  return render_template("viewspace.html", title="View Space",space=space, bookings=bookings)
 
 @app.route("/editspace/<id>")
 def edit_space(id):

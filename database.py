@@ -66,4 +66,15 @@ def commit_ledger_to_db(query):
   with engine.connect() as conn:
     result = conn.execute(text(query))
     return result
-  
+
+def load_bookings_from_db(id):
+  with engine.connect() as conn:
+    query = f"SELECT bookDate, bookFrom, bookTo, bookRate, rateType, members.name FROM clouddesk.bookings, clouddesk.members where spaceID = {id} and bookings.memberID = members.ID"
+    result = conn.execute(text(query))
+    rows = result.all()
+    bookings = []
+    for row in rows:
+      bookings.append(row._mapping)
+    return bookings
+    
+      
