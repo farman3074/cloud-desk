@@ -101,8 +101,19 @@ def show_invoice(id):
   member = load_member_from_db(invoice['memberID'])
   invoiceLIs = load_invoiceLI_from_db(id)
   return render_template("viewinvoice.html", title="Customer Invoice", invoice=invoice,member=member,invoiceLI=invoiceLIs)
-  
 
+@app.route("/payinvoice/<id>")
+def pay_invoice(id):
+  return render_template("payinvoice.html", invoiceID=id)
+
+@app.route("/commitpayment",methods =["POST"])
+def commit_invoice():
+  query = "Update invoices set ispaid = 'Y', instrumentType ='" + request.form.get('instrumentType') +"',instrumentRef='" + request.form.get('instrumentRef') +"',paydate='" +request.form.get('instrumentDate') +"',paidamt =" +request.form.get('amount') +" where ID = " + request.form.get('invoiceID')
+  result = commit_query_to_db(query)
+  query = "insert into ledger (entryDate, entryRef, entryType, entryDesc, entryValue) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "'," + request.form.get('invoiceID') + ",'INVOICE', 'Invoice Payment by Customer'," + request.form.get('amount') + ")"
+  result = commit_query_to_db(query)
+  return redirect(f"/viewinvoice/{request.form.get('invoiceID')}")
+  
 @app.route("/reporting")
 def show_reporting():
   return render_template("reporting.html", title="Reporting")
