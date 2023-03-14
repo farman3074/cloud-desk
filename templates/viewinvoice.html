@@ -15,6 +15,22 @@
         border-width: 1px 0;
         box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
       }
+
+       .b-thin-divider {
+        height: 2rem;
+        background-color: rgba(248,207,55,255);
+        border: solid rgba(248,207,55,255);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-white-divider {
+        height: 2rem;
+        background-color: rgba(255,255,255,255);
+        border: solid rgba(255,255,255,255);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(255,255,255,255), inset 0 .125em .5em rgba(255,255,255,255);
+      }
       </style>
 
     <script>
@@ -35,6 +51,7 @@
   <body>
     <div class="container">
       <div class="b-example-divider"></div>
+      <div class="b-white-divider"></div>
       <div class="row">
         <div class="col-sm-10"></div>
         <div class="col-sm-2">
@@ -109,6 +126,7 @@
     
     <div class='container'>
        <div class="b-example-divider"></div>
+       <div class="b-white-divider"></div>
       <!--<a class="btn btn-warning" href="#" role="button">PRINT</a>-->
       <input class="btn btn-warning" type="button" onclick="printDiv('printarea')" value="PRINT" />
       <a class="btn btn-warning" href="/invoicing" role="button">BACK</a>
