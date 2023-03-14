@@ -33,6 +33,19 @@
   </head>
   
   <body>
+    <div class="container">
+      <div class="b-example-divider"></div>
+      <div class="row">
+        <div class="col-sm-10"></div>
+        <div class="col-sm-2">
+      {% if invoice['ispaid'] == 'N' %}
+        <a class="btn btn-warning btn-lg" href="#" role="button">PAY NOW</a>
+      {% else %}
+        <a class="btn btn-success btn-lg" href="#" role="button">PAID</a>
+      {% endif %}
+        </div>
+      </div>
+    </div>
     <div class="container" id="printarea">
     <div class="container">
       <h3>{{title}}</h3>
@@ -48,7 +61,6 @@
             <th scope="col"><h5>Tax Amount</h5></th>
             <th scope="col"><h5>Discount</h5></th>
             <th scope="col"><h5>Total</h5></th>
-            <th scope="col"><h5>Paid</h5></th>
           </tr>
         </thead>
         <tbody>
@@ -61,7 +73,6 @@
             <td>{{ invoice['taxamount'] }}</td>
             <td>{{ invoice['discount'] }}</td>
             <td>{{ invoice['amtwithtax'] }}</td>
-            <td>{{ invoice['ispaid'] }}</td>
         </tbody>
       </table>
     </div>
