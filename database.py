@@ -112,3 +112,12 @@ def load_invoiceLI_from_db(id):
     for row in rows:
       LIs.append(row._mapping)
     return LIs
+
+def load_active_members_from_db(query):
+  with engine.connect() as conn:
+    result = conn.execute(text(query))
+    mem_list = result.all()
+    members = []
+    for row in mem_list:
+      members.append(row._mapping)
+    return members
