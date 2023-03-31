@@ -93,7 +93,9 @@ def commit_booking():
 @app.route("/invoicing")
 def show_invoices():
   invoices = load_invoices_from_db()
-  return render_template("invoicing.html", title="Invoicing", invoices=invoices)
+  query = "SELECT ID,name FROM members where members.ID in (select memberID from bookings where bookings.bookto > '"+ datetime.now().strftime("%Y-%m-%d") + "')"
+  result = load_active_members_from_db(query)
+  return render_template("invoicing.html", title="Invoicing", invoices=invoices, members = result)
 
 @app.route("/viewinvoice/<id>")
 def show_invoice(id):
@@ -116,9 +118,7 @@ def commit_invoice():
 
 @app.route("/newinvoice")
 def new_invoice():
-  query = "SELECT ID,name FROM members where members.ID in (select memberID from bookings where bookings.bookto > '"+ datetime.now().strftime("%Y-%m-%d") + "')"
-  result = load_active_members_from_db(query)
-  return render_template("newinvoice.html", result = result)
+  return "Returned from Modal"
   
 
 
