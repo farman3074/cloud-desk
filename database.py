@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine,text
+import calendar
 import os
 
 db_connection_str = os.environ['DB_CONNECT_STR']
@@ -121,3 +122,17 @@ def load_active_members_from_db(query):
     for row in mem_list:
       members.append(row._mapping)
     return members
+
+def creat_monthly_invoice(startdate,enddate, memberid):
+  currMonth = datetime.strptime(startdate,"%Y-%m-%d").month
+  currYear = datetime.strptime(startdate,"%Y-%m-%d").year
+  firstDayDate = datetime.datetime(currYear, currMonth, 1)
+  numDays = calendar.monthrange(currYear,currMonth)
+  lastDayDate = datetime.datetime(currYear, currMonth, numDays)
+  
+  query = "Select * from bookings where memberID = '" + memberid + "' and bookings.bookFrom <= '" + firstDayDate + "' and bookings.bookto >= '" + lastDayDate + "'"
+  with engine.connect() as conn:
+    results = conn.execute(text(query))
+    for result in results:
+        
+  return
