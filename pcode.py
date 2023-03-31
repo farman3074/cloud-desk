@@ -21,5 +21,7 @@
 from datetime import datetime
 from database import commit_query_to_db
 
-def creat_monthly_batch_invoices(startdate,enddate, memberid):
+def creat_monthly_invoice(startdate,enddate, memberid):
+  currMonth = datetime.strptime(startdate,"%Y-%m-%d").month
+  query = "Select * from bookings where memberID = '" + memberid + "'"
   return
