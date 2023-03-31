@@ -116,7 +116,7 @@ def commit_invoice():
   result = commit_query_to_db(query)
   return redirect(f"/viewinvoice/{request.form.get('invoiceID')}")
 
-@app.route("/newinvoice")
+@app.route("/newinvoice",methods =["POST"])
 def new_invoice():
   return "Returned from Modal"
   
