@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine,text
 import calendar
+from datetime import datetime,date
 import os
 
 db_connection_str = os.environ['DB_CONNECT_STR']
@@ -124,15 +125,57 @@ def load_active_members_from_db(query):
     return members
 
 def creat_monthly_invoice(startdate,enddate, memberid):
-  currMonth = datetime.strptime(startdate,"%Y-%m-%d").month
-  currYear = datetime.strptime(startdate,"%Y-%m-%d").year
-  firstDayDate = datetime.datetime(currYear, currMonth, 1)
-  numDays = calendar.monthrange(currYear,currMonth)
-  lastDayDate = datetime.datetime(currYear, currMonth, numDays)
   
-  query = "Select * from bookings where memberID = '" + memberid + "' and bookings.bookFrom <= '" + firstDayDate + "' and bookings.bookto >= '" + lastDayDate + "'"
+  startdate = datetime.strptime(startdate, '%Y-%m-%d')
+  currMonth = startdate.month
+  currYear = startdate.year
+  firstDayDate = date(currYear, currMonth, 1)
+  monthCal = calendar.monthrange(currYear,currMonth)
+  numDays = monthCal[1]
+  lastDayDate = date(currYear, currMonth, numDays)
+
   with engine.connect() as conn:
+    # first check if the invoice is already created
+    query = "Select * from invoices where memberID = " + str(memberid) + " and invoicetype = 'MONTHLY" + str(currMonth) + str(currYear) + "'"
     results = conn.execute(text(query))
-    for result in results:
-        
-  return
+    result_list = results.all()
+    invlist = []
+    for row in result_list:
+      invlist.append(row._mapping)
+    if len(invlist) == 0:
+      # select active bookings of this member
+      query = "Select * from bookings where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "'"
+      results = conn.execute(text(query))
+      book_list = results.all()
+      bookings = []
+      for row in book_list:
+        bookings.append(row._mapping)
+      if len(bookings) > 0:
+        # create invoice for the current month
+        query = "insert into invoices (createdon,invoicedate,duedate,memberID,header,footer,invoicetype) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "','" + datetime.now().strftime("%Y-%m-%d") + "','" + datetime.now().strftime("%Y-%m-%d") + "'," + str(memberid) + ",'Monthly Rental Invoice','Please pay by cheque or bank transfer to A/C # XXXXXX','MONTHLY"+ str(currMonth) + str(currYear) + "')"
+        invoiceID = commit_invoice_to_db(query)
+        # now create LIs against each booking
+        invAmt = 0
+        for row in bookings:
+          counter = 1
+    
+          if row['rateType'] == "MONTHLY":
+            rental = row['bookRate']
+          if row['rateType'] == "WEEKLY":
+            rental = row['bookRate'] * 4
+          if row['rateType'] == "HOURLY":
+            rental = row['bookRate'] * 24 * numDays
+          if row['rateType'] == "DAILY":
+            rental = row['bookRate'] * numDays
+    
+          query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values (" + str(invoiceID['ID']) + ","+str(counter)+",'Monthly Rental for "+ str(row['spaceID']) +"',0,1," + str(rental) + "," + str(row['ID']) + ")"
+          result = commit_query_to_db(query)
+
+          invAmt = invAmt + rental
+          counter = counter + 1
+
+        # now update invoiceID in the invoice table
+        query = "update invoices set invoiceamt = " + str(invAmt) + ",taxamount = 0, amtwithtax = " + str(invAmt) + ", discount = 0 where ID = " + str(invoiceID['ID'])
+        result = commit_query_to_db(query)
+  
+  return 0

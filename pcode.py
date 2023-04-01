@@ -1,7 +1,7 @@
 # invoice types
 # field in invoices table
 # SECURITYADVANCE - Inserted at booking
-# MONTHLY - Monthly customer invoice
+# MONTHLYMMYYYY - Monthly customer invoice MM and YYYY
 # SPECIAL - Invoices generated for clearances or other mid month billing
 
 # billing types

@@ -123,8 +123,8 @@ def new_invoice():
     query = "SELECT ID,name FROM members where members.ID in (select memberID from bookings where bookings.bookto > '"+ datetime.now().strftime("%Y-%m-%d") + "')"
     results = load_active_members_from_db(query)
     for result in results:        creat_monthly_invoice(request.form.get("fromInput"),request.form.get("toInput"), result.get("ID"))
-  else
-creat_monthly_invoice(request.form.get("fromInput"),request.form.get("toInput"), form.get("memberInput"))
+  else:
+    creat_monthly_invoice(request.form.get("fromInput"),request.form.get("toInput"),request.form.get("memberInput"))
     
   return redirect("/invoicing")
   
