@@ -146,7 +146,6 @@ def creat_monthly_invoice(startdate,enddate, memberid):
       # select active bookings of this member
 
 
-
       # ORIGINAL - covered full months only
       #query = "Select bookings.*,spaces.name from bookings,spaces where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "' and bookings.spaceID = spaces.ID"
 
@@ -155,8 +154,6 @@ def creat_monthly_invoice(startdate,enddate, memberid):
 
       query = "Select * from bookings where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "'"
 
-
-      query = "Select * from bookings where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "'"
 
       query = "Select * from bookings where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "'"
 
@@ -173,7 +170,6 @@ def creat_monthly_invoice(startdate,enddate, memberid):
         invAmt = 0
         for row in bookings:
           counter = 1
-
 
 
           # Check for partial months and first months post booking (partial invoicing)
@@ -220,6 +216,7 @@ def creat_monthly_invoice(startdate,enddate, memberid):
     
           query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values (" + str(invoiceID['ID']) + ","+str(counter)+",'Monthly Rental for "+ str(row['name']) +"- "+ firstDayDate.strftime("%Y-%m-%d") +" to " + lastDayDate.strftime("%Y-%m-%d") + "',"+ str(row['bookRate']) +",1," + str(rental) + "," + str(row['ID']) + ")"
 
+
     
           if row['rateType'] == "MONTHLY":
             rental = row['bookRate']
@@ -231,6 +228,7 @@ def creat_monthly_invoice(startdate,enddate, memberid):
             rental = row['bookRate'] * numDays
     
           query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values (" + str(invoiceID['ID']) + ","+str(counter)+",'Monthly Rental for "+ str(row['spaceID']) +"',0,1," + str(rental) + "," + str(row['ID']) + ")"
+
           result = commit_query_to_db(query)
 
           invAmt = invAmt + rental

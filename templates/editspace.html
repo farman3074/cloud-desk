@@ -32,10 +32,22 @@
             <td><input type="text" class="form-control" name="nameInput" value="{{ space['name'] }}"></td>
           <tr>
             <th scope="row">Type</th>
-           <td><input type="text" class="form-control" name="typeInput" value="{{ space['type'] }}"></td>
+            <td><select class="form-select" aria-label="Default select example" name = 'typeInput' required>
+                  <option value = "Executive Office" {% if space['type'] == "Executive Office" %} selected {% endif %} > EXECUTIVE OFFICE </option>
+                  <option value = "Private Office" {% if space['type'] == "Private Office" %} selected {% endif %} > PRIVATE OFFICE </option>
+                  <option value = "Work Desk" {% if space['type'] == "Work Desk" %} selected {% endif %} > WORK DESK </option>
+                  <option value = "Board Room" {% if space['type'] == "Board Room" %} selected {% endif %} > BOARD ROOM </option>
+                </select>
+             </td>
           <tr>
             <th scope="row">Floor</th>
-           <td><input type="text" class="form-control" name="floorInput" " value="{{ space['floor'] }}"></td>
+           <td><select class="form-select" aria-label="Default select example" name = 'floorInput' required>
+              <option selected>Choose Floor</option>
+                  <option value = 'Ground Floor' {% if space['floor'] == "Ground Floor" %} selected {% endif %}> Ground Floor </option>
+                   <option value = 'First Floor' {% if space['floor'] == "First Floor" %} selected {% endif %}> First Floor </option>
+                   <option value = 'Second Floor' {% if space['floor'] == "Second Floor" %} selected {% endif %}> Second Floor </option>
+                   <option value = 'Lower Ground' {% if space['floor'] == "Lower Ground" %} selected {% endif %}> Lower Ground </option>
+                </select></td>
           <tr>
             <th scope="row">Seats</th>
             <td><input type="number" class="form-control" name="seatsInput" value="{{ space['seats'] }}"></td>
@@ -43,8 +55,23 @@
             <th scope="row">Area</th>
             <td><input type="number" class="form-control" name="areaInput" value="{{ space['area'] }}"></td>
           <tr>
+            <th scope="row">List Rate</th>
+            <td><input type="number" class="form-control" name="rateInput" value="{{ space['listRate'] }}"></td>
+          <tr>
+            <th scope="row">Rate Type</th>
+            <td><select class="form-select" aria-label="Default select example" name = 'ratetypeInput' required>
+                  <option value = 'MONTHLY' {% if space['rateType'] == "MONTHLY" %} selected {% endif %} > MONTHLY </option>
+                  <option value = 'WEEKLY' {% if space['rateType'] == "WEEKLY" %} selected {% endif %} > WEEKLY </option>
+                  <option value = 'DAILY' {% if space['rateType'] == "DAILY" %} selected {% endif %} > DAILY </option>
+                  <option value = 'HOURLY' {% if space['rateType'] == "HOURLY" %} selected {% endif %} > HOURLY </option>
+                </select>
+              </td>
+          <tr>
             <th scope="row">Available</th>
-            <td><input type="text" class="form-control" name="emptyInput" value="{{ space['isempty'] }}"></td>
+            <td><select class="form-select" aria-label="Default select example" name = 'emptyInput' required>
+                  <option value = "Yes" {% if space['isEmpty'] == "Yes" %} selected {% endif %} > YES </option>
+         <option value = "No" {% if space['isEmpty'] == "No" %} selected {% endif %} > NO </option>     
+            </select></td>
         </tbody>
       </table>
       <button type="submit" class="btn btn-primary">Submit</button>

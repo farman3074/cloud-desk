@@ -150,7 +150,8 @@ def new_invoice():
       creat_monthly_invoice(request.form.get("fromInput"),request.form.get("toInput"), result.get("ID"))       
   else:
     creat_monthly_invoice(request.form.get("fromInput"),request.form.get("toInput"),request.form.get("memberInput"))
-      
+  
+    
   return redirect("/invoicing")
   
 
