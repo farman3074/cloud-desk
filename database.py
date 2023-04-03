@@ -144,7 +144,22 @@ def creat_monthly_invoice(startdate,enddate, memberid):
       invlist.append(row._mapping)
     if len(invlist) == 0:
       # select active bookings of this member
+
+
+
+      # ORIGINAL - covered full months only
+      #query = "Select bookings.*,spaces.name from bookings,spaces where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "' and bookings.spaceID = spaces.ID"
+
+      #MODIFIED to cover partial months also
+      query = "Select bookings.*,spaces.name from bookings,spaces where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookTo >= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.spaceID = spaces.ID"
+
       query = "Select * from bookings where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "'"
+
+
+      query = "Select * from bookings where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "'"
+
+      query = "Select * from bookings where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "'"
+
       results = conn.execute(text(query))
       book_list = results.all()
       bookings = []
@@ -158,6 +173,53 @@ def creat_monthly_invoice(startdate,enddate, memberid):
         invAmt = 0
         for row in bookings:
           counter = 1
+
+
+
+          # Check for partial months and first months post booking (partial invoicing)
+          billDays = numDays 
+          firstDayDate = date(currYear, currMonth, 1)
+          lastDayDate = date(currYear, currMonth, numDays)
+          
+          bookFrom = row['bookFrom']
+          bookMonth = bookFrom.month
+          bookYear = bookFrom.year
+          bookDay = bookFrom.day
+          numDaysLast = numDays
+
+          bookTo = row['bookTo']
+          toMonth = bookTo.month
+          toYear = bookTo.year
+          toDay = bookTo.day
+          
+          
+          if (bookYear == currYear and bookMonth == currMonth - 1) or (bookMonth == 12 and currMonth == 1 and bookYear == currYear-1):
+            # booking was done last month of the same year or decoember of last year (and we are invoicing in Jan)
+
+            numDaysLast = (calendar.monthrange(bookYear,bookMonth))[1]
+            billDays = numDaysLast - bookDay + 1
+            firstDayDate = bookFrom
+            lastDayDate = date(bookYear,bookMonth,numDaysLast)
+            
+          
+          if toYear == currYear and toMonth == currMonth:
+            # booking expiring in the current month - so partial billing
+            numDaysLast = numDays
+            billDays = toDay
+            firstDayDate = date(currYear, currMonth, 1)
+            lastDayDate = date(toYear,toMonth,toDay)
+          
+          if row['rateType'] == "MONTHLY":
+            rental = (row['bookRate'] / numDaysLast) * billDays
+          if row['rateType'] == "WEEKLY":
+            rental = (row['bookRate'] / 7) * billDays
+          if row['rateType'] == "HOURLY":
+            rental = row['bookRate'] * 24 * billDays
+          if row['rateType'] == "DAILY":
+            rental = row['bookRate'] * billDays
+    
+          query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values (" + str(invoiceID['ID']) + ","+str(counter)+",'Monthly Rental for "+ str(row['name']) +"- "+ firstDayDate.strftime("%Y-%m-%d") +" to " + lastDayDate.strftime("%Y-%m-%d") + "',"+ str(row['bookRate']) +",1," + str(rental) + "," + str(row['ID']) + ")"
+
     
           if row['rateType'] == "MONTHLY":
             rental = row['bookRate']
