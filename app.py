@@ -42,7 +42,18 @@ def commit_member():
   query = "update members set name ='" + request.form.get('nameInput') + "', company = '" + request.form.get('companyInput') + "', email ='" + request.form.get('emailInput') + "', phone = '" +  request.form.get('phoneInput') + "', nature = '" + request.form.get('natureInput') + "', address = '" + request.form.get('addressInput') + "' where ID= " + request.form.get('idInput')
   result = commit_member_to_db(query)
   return redirect(f"/viewmember/{request.form.get('idInput')}")
-    
+
+@app.route("/addmember")
+def add_member():
+  return render_template("addmember.html", title="Add Member")
+
+@app.route("/commitaddmember",methods =["POST"])
+def commit_add_member():
+  query = "insert into members (`name`, `company`, `email`, `phone`, `nature`, `address`, `membership_date`) VALUES ('" + request.form.get('nameInput') + "', '" + request.form.get('companyInput') + "','" + request.form.get('emailInput') + "','" +  request.form.get('phoneInput') + "','" + request.form.get('natureInput') + "','" + request.form.get('addressInput') + "','" + datetime.now().strftime("%Y-%m-%d") + "')" 
+  result = commit_member_to_db(query)
+  return redirect("/members")
+
+  
 @app.route("/spaces")
 def show_spaces():
   spaces = load_spaces_from_db()
@@ -59,11 +70,22 @@ def edit_space(id):
   space = load_space_from_db(id)
   return render_template("editspace.html", title="Edit space",space=space)
 
+@app.route("/addspace")
+def add_space():
+  return render_template("addspace.html", title="Add Space")
+
 @app.route("/commitspace",methods =["POST"])
 def commit_space():
-  query = "update spaces set name ='" + request.form.get('nameInput') + "', type = '" + request.form.get('typeInput') + "', floor ='" + request.form.get('floorInput') + "', seats = " +  request.form.get('seatsInput') + ", area = " + request.form.get('areaInput') + ", isempty = '" + request.form.get('emptyInput') + "' where ID= " + request.form.get('idInput')
+  query = "update spaces set name ='" + request.form.get('nameInput') + "', type = '" + request.form.get('typeInput') + "', floor ='" + request.form.get('floorInput') + "', seats = " +  request.form.get('seatsInput') + ", area = " + request.form.get('areaInput') + ", isempty = '" + request.form.get('emptyInput') + "', listRate = '"+ request.form.get('rateInput') +"', rateType = '"+ request.form.get('ratetypeInput') +"' where ID= " + request.form.get('idInput')
   result = commit_space_to_db(query)
   return redirect(f"/viewspace/{request.form.get('idInput')}")
+
+@app.route("/commitaddspace",methods =["POST"])
+def commit_add_space():
+  query = "insert into spaces(`name`, `floor`, `seats`, `area`, `type`, `isempty`, `listRate`, `rateType`) VALUES ('" + request.form.get('nameInput') + "','" + request.form.get('floorInput') + "','" +  request.form.get('seatsInput') + "','" + request.form.get('areaInput') + "','" + request.form.get('typeInput') + "','Yes','" + request.form.get('rateInput') + "','" + request.form.get('ratetypeInput') + "')"
+  result = commit_space_to_db(query)
+  return redirect("/spaces")
+
 
 @app.route("/bookspace/<id>")
 def book_space(id):
@@ -105,6 +127,7 @@ def show_invoice(id):
   invoiceLIs = load_invoiceLI_from_db(id)
   return render_template("viewinvoice.html", title="Customer Invoice", invoice=invoice,member=member,invoiceLI=invoiceLIs)
 
+# this one is replaced by a Modal now
 @app.route("/payinvoice/<id>")
 def pay_invoice(id):
   return render_template("payinvoice.html", invoiceID=id)
@@ -122,10 +145,12 @@ def new_invoice():
   if request.form.get("memberInput") == "0":
     query = "SELECT ID,name FROM members where members.ID in (select memberID from bookings where bookings.bookto > '"+ datetime.now().strftime("%Y-%m-%d") + "')"
     results = load_active_members_from_db(query)
-    for result in results:        creat_monthly_invoice(request.form.get("fromInput"),request.form.get("toInput"), result.get("ID"))
+
+    for result in results:
+      creat_monthly_invoice(request.form.get("fromInput"),request.form.get("toInput"), result.get("ID"))       
   else:
     creat_monthly_invoice(request.form.get("fromInput"),request.form.get("toInput"),request.form.get("memberInput"))
-    
+      
   return redirect("/invoicing")
   
 
