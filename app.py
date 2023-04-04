@@ -1,10 +1,10 @@
-from flask import Flask,render_template,request,jsonify,redirect,url_for
+from flask import Flask,render_template,request,redirect,flash
 #import datafile
 from datetime import datetime
 from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db,load_active_members_from_db,creat_monthly_invoice
 
 app = Flask(__name__)
-
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 @app.route("/")
 def hello_world():
@@ -12,11 +12,13 @@ def hello_world():
 
 @app.route("/logincheck",methods =["POST"])
 def check_login():
+  error = None
   user = request.form.get("username") 
   if  user == "farman":
-      return render_template("dashboard.html", title="Dash Board")
+    return render_template("dashboard.html", title="Dash Board")
   else:
-    return render_template("home.html")
+    error = "Invalid Username or Password"
+    return render_template("home.html",error=error)
 
 @app.route("/dashboard")
 def show_dashbaord():

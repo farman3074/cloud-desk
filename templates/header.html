@@ -100,6 +100,17 @@
         <li class="nav-item"><a href="https://cloud-desk.farmanlodhi.repl.co/" class="nav-link active">LOGOUT</a></li>
       </ul>
     </header>
-  </div>
 
+  
+  </div>
+ 
+   {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
   <div class="b-example-divider"></div>
