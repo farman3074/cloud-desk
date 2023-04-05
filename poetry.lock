@@ -36,6 +36,30 @@ async = ["asgiref (>=3.2)"]
 dotenv = ["python-dotenv"]
 
 [[package]]
+name = "flask-login"
+version = "0.6.2"
+description = "User authentication and session management for Flask."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+Flask = ">=1.0.4"
+Werkzeug = ">=1.0.1"
+
+[[package]]
+name = "flask-sqlalchemy"
+version = "3.0.3"
+description = "Add SQLAlchemy support to your Flask application."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+Flask = ">=2.2"
+SQLAlchemy = ">=1.4.18"
+
+[[package]]
 name = "greenlet"
 version = "2.0.2"
 description = "Lightweight in-process concurrent programming"
@@ -137,12 +161,14 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "5f5c48c452a37992595383d83b403e15b5ac27c3073be0fed4f51d6d57a0fa69"
+content-hash = "a084873ffa9bfe6aa3b554dc131b485ce0d0a11506b94c690c74bc58cdf891dc"
 
 [metadata.files]
 click = []
 colorama = []
 flask = []
+flask-login = []
+flask-sqlalchemy = []
 greenlet = []
 itsdangerous = []
 jinja2 = []

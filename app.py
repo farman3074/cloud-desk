@@ -2,9 +2,34 @@ from flask import Flask,render_template,request,redirect,flash
 #import datafile
 from datetime import datetime
 from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db,load_active_members_from_db,creat_monthly_invoice
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin, LoginManager
+from flask_login import login_user, login_required, logout_user, current_user
+import os
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+#app.SQLALCHEMY_DATABASE_URI = os.environ['DB_CONNECT_STR']
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['SQLALCHEMY_DATABASE_URI']
+
+db = SQLAlchemy()
+db.init_app(app)
+
+class User(UserMixin, db.Model):
+  id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
+  userName = db.Column(db.String(45))  
+  userPWD = db.Column(db.String(45))
+  userGroup = db.Column(db.String(45))
+  userEmail = db.Column(db.String(45), unique=True)
+  
+
+login_manager = LoginManager()
+login_manager.login_view = ''
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 @app.route("/")
 def hello_world():
@@ -12,44 +37,60 @@ def hello_world():
 
 @app.route("/logincheck",methods =["POST"])
 def check_login():
-  error = None
-  user = request.form.get("username") 
-  if  user == "farman":
-    return render_template("dashboard.html", title="Dash Board")
-  else:
-    error = "Invalid Username or Password"
-    return render_template("home.html",error=error)
+  #error = None
+  email = request.form.get('username')
+  pwd = request.form.get('pswrd')
+  remember = True if request.form.get('remember') else False
+  #app.logger.info(email)
+  #user = User.query.filter_by(userEmail=email).first()
+  user = User.query.filter_by(userEmail=email).first()
+
+  # if the user doesn't exist or password is wrong, reload the page
+  if not user or user.userPWD != pwd:
+    flash('Please check your login details and try again.')
+    return redirect("/") 
+  
+  login_user(user, remember=remember)
+  return redirect("/dashboard")
+  
 
 @app.route("/dashboard")
+@login_required
 def show_dashbaord():
-  return render_template("dashboard.html", title="Dash Board")
+  return render_template("dashboard.html", title="Dash Board", userName=current_user.userName, userGroup = current_user.userGroup)
 
 @app.route("/members")
+@login_required
 def show_members():
   members = load_members_from_db()
-  return render_template("members.html", title="Members", members=members)
+  return render_template("members.html", title="Members", members=members, userName=current_user.userName, userGroup = current_user.userGroup)
 
 @app.route("/viewmember/<id>")
+@login_required
 def show_member(id):
   member = load_member_from_db(id)
   return render_template("viewmember.html", title="View Member",member=member)
 
 @app.route("/editmember/<id>")
+@login_required
 def edit_member(id):
   member = load_member_from_db(id)
   return render_template("editmember.html", title="Edit Member",member=member)
 
 @app.route("/commitmember",methods =["POST"])
+@login_required
 def commit_member():
   query = "update members set name ='" + request.form.get('nameInput') + "', company = '" + request.form.get('companyInput') + "', email ='" + request.form.get('emailInput') + "', phone = '" +  request.form.get('phoneInput') + "', nature = '" + request.form.get('natureInput') + "', address = '" + request.form.get('addressInput') + "' where ID= " + request.form.get('idInput')
   result = commit_member_to_db(query)
   return redirect(f"/viewmember/{request.form.get('idInput')}")
 
 @app.route("/addmember")
+@login_required
 def add_member():
   return render_template("addmember.html", title="Add Member")
 
 @app.route("/commitaddmember",methods =["POST"])
+@login_required
 def commit_add_member():
   query = "insert into members (`name`, `company`, `email`, `phone`, `nature`, `address`, `membership_date`) VALUES ('" + request.form.get('nameInput') + "', '" + request.form.get('companyInput') + "','" + request.form.get('emailInput') + "','" +  request.form.get('phoneInput') + "','" + request.form.get('natureInput') + "','" + request.form.get('addressInput') + "','" + datetime.now().strftime("%Y-%m-%d") + "')" 
   result = commit_member_to_db(query)
@@ -57,22 +98,26 @@ def commit_add_member():
 
   
 @app.route("/spaces")
+@login_required
 def show_spaces():
   spaces = load_spaces_from_db()
-  return render_template("spaces.html", title="Spaces", spaces=spaces)
+  return render_template("spaces.html", title="Spaces", spaces=spaces,userName=current_user.userName, userGroup = current_user.userGroup)
 
 @app.route("/viewspace/<id>")
+@login_required
 def show_space(id):
   space = load_space_from_db(id)
   bookings = load_bookings_from_db(id)
   return render_template("viewspace.html", title="View Space",space=space, bookings=bookings)
 
 @app.route("/editspace/<id>")
+@login_required
 def edit_space(id):
   space = load_space_from_db(id)
   return render_template("editspace.html", title="Edit space",space=space)
 
 @app.route("/addspace")
+@login_required
 def add_space():
   return render_template("addspace.html", title="Add Space")
 
@@ -83,6 +128,7 @@ def commit_space():
   return redirect(f"/viewspace/{request.form.get('idInput')}")
 
 @app.route("/commitaddspace",methods =["POST"])
+@login_required
 def commit_add_space():
   query = "insert into spaces(`name`, `floor`, `seats`, `area`, `type`, `isempty`, `listRate`, `rateType`) VALUES ('" + request.form.get('nameInput') + "','" + request.form.get('floorInput') + "','" +  request.form.get('seatsInput') + "','" + request.form.get('areaInput') + "','" + request.form.get('typeInput') + "','Yes','" + request.form.get('rateInput') + "','" + request.form.get('ratetypeInput') + "')"
   result = commit_space_to_db(query)
@@ -90,6 +136,7 @@ def commit_add_space():
 
 
 @app.route("/bookspace/<id>")
+@login_required
 def book_space(id):
   space = load_space_from_db(id)
   members = load_members_from_db()
@@ -97,6 +144,7 @@ def book_space(id):
   return render_template("bookspace.html", title = "Book " + space['name'], space=space, members=members, currentdate = currentdate)
 
 @app.route("/commitbooking",methods =["POST"])
+@login_required
 def commit_booking():
   query = "insert into bookings (memberID, spaceID, bookFrom, bookTo, bookRate, rateType, bookDate) Values (" + request.form.get('memberInput') +"," + request.form.get('spaceInput')  + ",'" + request.form.get('startInput') + "','" + request.form.get('endInput') + "'," + request.form.get('rateInput') + ",'" + request.form.get('ratetypeInput') + "','" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "')"
   bookingID = commit_booking_to_db(query)
@@ -115,14 +163,16 @@ def commit_booking():
   #return request.form.get('ratetypeInput')
   
 @app.route("/invoicing")
+@login_required
 def show_invoices():
   invoices = load_invoices_from_db()
   query = "SELECT ID,name FROM members where members.ID in (select memberID from bookings where bookings.bookto > '"+ datetime.now().strftime("%Y-%m-%d") + "')"
   result = load_active_members_from_db(query)
   currentdate = datetime.now().date()
-  return render_template("invoicing.html", title="Invoicing", invoices=invoices, members = result, currentdate = currentdate)
+  return render_template("invoicing.html", title="Invoicing", invoices=invoices, members = result, currentdate = currentdate, userName=current_user.userName, userGroup = current_user.userGroup)
 
 @app.route("/viewinvoice/<id>")
+@login_required
 def show_invoice(id):
   invoice = load_invoice_from_db(id)
   member = load_member_from_db(invoice['memberID'])
@@ -131,10 +181,12 @@ def show_invoice(id):
 
 # this one is replaced by a Modal now
 @app.route("/payinvoice/<id>")
+@login_required
 def pay_invoice(id):
   return render_template("payinvoice.html", invoiceID=id)
 
 @app.route("/commitpayment",methods =["POST"])
+@login_required
 def commit_invoice():
   query = "Update invoices set ispaid = 'Y', instrumentType ='" + request.form.get('instrumentType') +"',instrumentRef='" + request.form.get('instrumentRef') +"',paydate='" +request.form.get('instrumentDate') +"',paidamt =" +request.form.get('amount') +" where ID = " + request.form.get('invoiceID')
   result = commit_query_to_db(query)
@@ -143,6 +195,7 @@ def commit_invoice():
   return redirect(f"/viewinvoice/{request.form.get('invoiceID')}")
 
 @app.route("/newinvoice",methods =["POST"])
+@login_required
 def new_invoice():
   if request.form.get("memberInput") == "0":
     query = "SELECT ID,name FROM members where members.ID in (select memberID from bookings where bookings.bookto > '"+ datetime.now().strftime("%Y-%m-%d") + "')"
@@ -157,14 +210,17 @@ def new_invoice():
   return redirect("/invoicing")
   
 
-
-
   
 @app.route("/reporting")
+@login_required
 def show_reporting():
-  return render_template("reporting.html", title="Reporting")
+  return render_template("reporting.html", title="Reporting", userName=current_user.userName, userGroup = current_user.userGroup)
 
-
+@app.route("/logout")
+@login_required
+def logout():
+  logout_user()
+  return redirect("/")
 
 
 print(__name__)
