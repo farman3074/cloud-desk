@@ -57,13 +57,13 @@ def check_login():
 @app.route("/dashboard")
 @login_required
 def show_dashbaord():
-  return render_template("dashboard.html", title="Dash Board", userName=current_user.userName, userGroup = current_user.userGroup)
+  return render_template("dashboard.html", title="Dash Board", userName=current_user.userEmail, userGroup = current_user.userGroup)
 
 @app.route("/members")
 @login_required
 def show_members():
   members = load_members_from_db()
-  return render_template("members.html", title="Members", members=members, userName=current_user.userName, userGroup = current_user.userGroup)
+  return render_template("members.html", title="Members", members=members, userName=current_user.userEmail, userGroup = current_user.userGroup)
 
 @app.route("/viewmember/<id>")
 @login_required
@@ -101,7 +101,7 @@ def commit_add_member():
 @login_required
 def show_spaces():
   spaces = load_spaces_from_db()
-  return render_template("spaces.html", title="Spaces", spaces=spaces,userName=current_user.userName, userGroup = current_user.userGroup)
+  return render_template("spaces.html", title="Spaces", spaces=spaces,userName=current_user.userEmail, userGroup = current_user.userGroup)
 
 @app.route("/viewspace/<id>")
 @login_required
@@ -169,7 +169,7 @@ def show_invoices():
   query = "SELECT ID,name FROM members where members.ID in (select memberID from bookings where bookings.bookto > '"+ datetime.now().strftime("%Y-%m-%d") + "')"
   result = load_active_members_from_db(query)
   currentdate = datetime.now().date()
-  return render_template("invoicing.html", title="Invoicing", invoices=invoices, members = result, currentdate = currentdate, userName=current_user.userName, userGroup = current_user.userGroup)
+  return render_template("invoicing.html", title="Invoicing", invoices=invoices, members = result, currentdate = currentdate, userName=current_user.userEmail, userGroup = current_user.userGroup)
 
 @app.route("/viewinvoice/<id>")
 @login_required
@@ -208,13 +208,19 @@ def new_invoice():
   
     
   return redirect("/invoicing")
-  
+   
 
-  
 @app.route("/reporting")
 @login_required
 def show_reporting():
-  return render_template("reporting.html", title="Reporting", userName=current_user.userName, userGroup = current_user.userGroup)
+  return render_template("reporting.html", title="Reporting", userName=current_user.userEmail, userGroup = current_user.userGroup)
+
+@app.route("/accounting")
+@login_required
+def show_accounting():
+  return render_template("accounting.html", title="Accounting", userName=current_user.userEmail, userGroup = current_user.userGroup)
+
+
 
 @app.route("/logout")
 @login_required

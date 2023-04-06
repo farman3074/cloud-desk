@@ -87,21 +87,33 @@
 <div class="container">
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
       <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-        </svg><img src="static/logohead.jpg" class="img-fluid" alt="Cloud Desk">
-        <span class="fs-4">{{title}}</span>
+        
+  <!--<nav class="navbar navbar-expand-lg bg-body-tertiary">-->
+    <div class="container-fluid">
+  <img src="static/logohead.jpg" class="img-fluid" alt="Cloud Desk">
+    </div>
+ <!--       <span class="fs-4">{{title}}</span> -->
+         <div class="container-fluid">
+    <span class="navbar-brand mb-0 h1"><h4>CloudDesk Terminal</h4></span>
+  </div>
       </a>
 
       <ul class="nav nav-pills">
-        <li class="nav-item"><a href="https://cloud-desk.farmanlodhi.repl.co/dashboard" class="nav-link" aria-current="page">Home</a></li>
-        <li class="nav-item"><a href="https://cloud-desk.farmanlodhi.repl.co/members" class="nav-link">Members</a></li>
-        <li class="nav-item"><a href="https://cloud-desk.farmanlodhi.repl.co/spaces" class="nav-link">Spaces</a></li>
-        <li class="nav-item"><a href="https://cloud-desk.farmanlodhi.repl.co/invoicing" class="nav-link">Invoicing</a></li>
-        <li class="nav-item"><a href="https://cloud-desk.farmanlodhi.repl.co/reporting" class="nav-link">Reporting</a></li>
-        <li class="nav-item"><a href="https://cloud-desk.farmanlodhi.repl.co/logout" class="nav-link active">LOGOUT</a></li>
+        <li class="nav-item"><a href="/dashboard" class="nav-link {% if "Dash Board" == title %}active{% endif %}" aria-current="page"><h6>Home</h6></a></li>
+        <li class="nav-item"><a href="/members" class="nav-link {% if "Members" == title %}active{% endif %}"><h6>Members</h6></a></li>
+        <li class="nav-item"><a href="/spaces" class="nav-link {% if "Spaces" == title %}active{% endif %}"><h6>Spaces</h6></a></li>
+        <li class="nav-item"><a href="/invoicing" class="nav-link {% if "Invoicing" == title %}active{% endif %}"><h6>Invoicing</h6></a></li>
+        <li class="nav-item"><a href="/reporting" class="nav-link {% if "Reporting" == title %}active{% endif %}"><h6>Reporting</h6></a></li>
+        <li class="nav-item"><a href="/accounting" class="nav-link {% if "Accounting" == title %}active{% endif %}"><h6>Accounting</h6></a></li>
+        <li class="navbar-text">
+        <p><small>| {{userName}} |</small></p>
+      </li>
+        <li class="nav-item"><a href="/logout" class="nav-link"><h5>Logout</h5></a></li>
       </ul>
+       
     </header>
-<P>Welcome {{userName}}</P>
-  
+<!-- <P>Welcome {{userName}}</P> -->
+<!--  </nav>-->
   </div>
  
    {% with messages = get_flashed_messages() %}
