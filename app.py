@@ -149,14 +149,18 @@ def commit_booking():
   query = "insert into bookings (memberID, spaceID, bookFrom, bookTo, bookRate, rateType, bookDate) Values (" + request.form.get('memberInput') +"," + request.form.get('spaceInput')  + ",'" + request.form.get('startInput') + "','" + request.form.get('endInput') + "'," + request.form.get('rateInput') + ",'" + request.form.get('ratetypeInput') + "','" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "')"
   bookingID = commit_booking_to_db(query)
 #  query = "insert into ledger (entryDate, bookingID, entryType, entryDesc, entryValue) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "'," + str(bookingID['ID']) + ", 'SECURITY','Security Deposit'," + request.form.get('securityInput')+")"
-  invAmt = int(request.form.get('securityInput')) + int( request.form.get('advanceInput'))
-  query = "insert into invoices (createdon,invoicedate,duedate,memberID,header,footer,invoiceamt,amtwithtax,invoicetype) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "','" + datetime.now().strftime("%Y-%m-%d") + "','" + datetime.now().strftime("%Y-%m-%d") + "'," + request.form.get('memberInput') + ",'Invoice for Security and Advance','Please pay by cheque or bank transfer to A/C # XXXXXX'," + str(invAmt) + ","+ str(invAmt) +",'SECURITYADVANCE')"
-  invoiceID = commit_invoice_to_db(query)
-  query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values ('" + str(invoiceID['ID']) + "',1,'Security Deposit',0,1," + request.form.get('securityInput') + ",'" + str(bookingID['ID']) + "')"
-  result = commit_query_to_db(query)
-  query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values ('" + str(invoiceID['ID']) + "',2,'Advance Rent',0,1," + request.form.get('advanceInput') + ",'" + str(bookingID['ID']) + "')"
-  result = commit_query_to_db(query)
+  #create advance and security invoices only when spaceType is not 'Resource'
+  if request.form.get('spaceType') != "Resource":
+    invAmt = int(request.form.get('securityInput')) + int( request.form.get('advanceInput'))
+    query = "insert into invoices (createdon,invoicedate,duedate,memberID,header,footer,invoiceamt,amtwithtax,invoicetype) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "','" + datetime.now().strftime("%Y-%m-%d") + "','" + datetime.now().strftime("%Y-%m-%d") + "'," + request.form.get('memberInput') + ",'Invoice for Security and Advance','Please pay by cheque or bank transfer to A/C # XXXXXX'," + str(invAmt) + ","+ str(invAmt) +",'SECURITYADVANCE')"
+    invoiceID = commit_invoice_to_db(query)
+    query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values ('" + str(invoiceID['ID']) + "',1,'Security Deposit',0,1," + request.form.get('securityInput') + ",'" + str(bookingID['ID']) + "')"
+    result = commit_query_to_db(query)
+    query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values ('" + str(invoiceID['ID']) + "',2,'Advance Rent',0,1," + request.form.get('advanceInput') + ",'" + str(bookingID['ID']) + "')"
+    result = commit_query_to_db(query)
   #query = "insert into ledger (entryDate, bookingID, entryType, entryDesc, entryValue) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "'," + str(bookingID['ID']) + ", 'ADVANCE','Advance Deposit'," + request.form.get('advanceInput') +")"
+    #end if here
+  
   query = "update spaces set isempty ='No' where ID = " + request.form.get('spaceInput')
   result = commit_space_to_db(query)
   return redirect("/spaces")

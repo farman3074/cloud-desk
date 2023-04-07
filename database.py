@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine,text
 import calendar
-from datetime import datetime,date
+from datetime import datetime,date,timedelta
+from dateutil.relativedelta import relativedelta
 import os
 
 
@@ -136,6 +137,8 @@ def creat_monthly_invoice(startdate,enddate, memberid):
   numDays = monthCal[1]
   lastDayDate = date(currYear, currMonth, numDays)
 
+  lastMonthStart = firstDayDate - relativedelta(months=1)
+  
   with engine.connect() as conn:
     # first check if the invoice is already created
     query = "Select * from invoices where memberID = " + str(memberid) + " and invoicetype = 'MONTHLY" + str(currMonth) + str(currYear) + "'"
@@ -152,12 +155,12 @@ def creat_monthly_invoice(startdate,enddate, memberid):
       #query = "Select bookings.*,spaces.name from bookings,spaces where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "' and bookings.spaceID = spaces.ID"
 
       #MODIFIED to cover partial months also
-      query = "Select bookings.*,spaces.name from bookings,spaces where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookTo >= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.spaceID = spaces.ID"
+      query = "Select bookings.*,spaces.name,spaces.type from bookings,spaces where memberID = '" + str(memberid) + "' and ((spaces.type != 'Resource' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookTo >= '" + firstDayDate.strftime("%Y-%m-%d") + "') or (spaces.type = 'Resource' and bookings.bookFrom >= '" + lastMonthStart.strftime("%Y-%m-%d") + "and bookings.bookTo < '" + lastDayDate.strftime("%Y-%m-%d") + "')) and bookings.spaceID = spaces.ID"
 
-      query = "Select * from bookings where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "'"
+#      query = "Select * from bookings where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "'"
 
 
-      query = "Select * from bookings where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "'"
+#      query = "Select * from bookings where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "'"
 
       results = conn.execute(text(query))
       book_list = results.all()
@@ -173,69 +176,80 @@ def creat_monthly_invoice(startdate,enddate, memberid):
         for row in bookings:
           counter = 1
 
-
-          # Check for partial months and first months post booking (partial invoicing)
-          billDays = numDays 
-          firstDayDate = date(currYear, currMonth, 1)
-          lastDayDate = date(currYear, currMonth, numDays)
+          if row['type'] != "Resource":
+            # Check for partial months and first months post booking (partial invoicing)
+            billDays = numDays 
+            firstDayDate = date(currYear, currMonth, 1)
+            lastDayDate = date(currYear, currMonth, numDays)
           
-          bookFrom = row['bookFrom']
-          bookMonth = bookFrom.month
-          bookYear = bookFrom.year
-          bookDay = bookFrom.day
-          numDaysLast = numDays
+            bookFrom = row['bookFrom']
+            bookMonth = bookFrom.month
+            bookYear = bookFrom.year
+            bookDay = bookFrom.day
+            numDaysLast = numDays
 
-          bookTo = row['bookTo']
-          toMonth = bookTo.month
-          toYear = bookTo.year
-          toDay = bookTo.day
+            bookTo = row['bookTo']
+            toMonth = bookTo.month
+            toYear = bookTo.year
+            toDay = bookTo.day
           
           
-          if (bookYear == currYear and bookMonth == currMonth - 1) or (bookMonth == 12 and currMonth == 1 and bookYear == currYear-1):
-            # booking was done last month of the same year or decoember of last year (and we are invoicing in Jan)
+            if (bookYear == currYear and bookMonth == currMonth - 1) or (bookMonth == 12 and currMonth == 1 and bookYear == currYear-1):
+              # booking was done last month of the same year or decoember of last year (and we are invoicing in Jan)
 
-            numDaysLast = (calendar.monthrange(bookYear,bookMonth))[1]
-            billDays = numDaysLast - bookDay + 1
-            firstDayDate = bookFrom
-            lastDayDate = date(bookYear,bookMonth,numDaysLast)
+              numDaysLast = (calendar.monthrange(bookYear,bookMonth))[1]
+              billDays = numDaysLast - bookDay + 1
+              firstDayDate = bookFrom
+              lastDayDate = date(bookYear,bookMonth,numDaysLast)
             
           
-          if toYear == currYear and toMonth == currMonth:
-            # booking expiring in the current month - so partial billing
-            numDaysLast = numDays
-            billDays = toDay
-            firstDayDate = date(currYear, currMonth, 1)
-            lastDayDate = date(toYear,toMonth,toDay)
+            if toYear == currYear and toMonth == currMonth:
+              # booking expiring in the current month - so partial billing
+              numDaysLast = numDays
+              billDays = toDay
+              firstDayDate = date(currYear, currMonth, 1)
+              lastDayDate = date(toYear,toMonth,toDay)
           
-          if row['rateType'] == "MONTHLY":
-            rental = (row['bookRate'] / numDaysLast) * billDays
-          if row['rateType'] == "WEEKLY":
-            rental = (row['bookRate'] / 7) * billDays
-          if row['rateType'] == "HOURLY":
-            rental = row['bookRate'] * 24 * billDays
-          if row['rateType'] == "DAILY":
-            rental = row['bookRate'] * billDays
+            if row['rateType'] == "MONTHLY":
+              rental = (row['bookRate'] / numDaysLast) * billDays
+            if row['rateType'] == "WEEKLY":
+              rental = (row['bookRate'] / 7) * billDays
+            if row['rateType'] == "HOURLY":
+              rental = row['bookRate'] * 24 * billDays
+            if row['rateType'] == "DAILY":
+              rental = row['bookRate'] * billDays
     
-          query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values (" + str(invoiceID['ID']) + ","+str(counter)+",'Monthly Rental for "+ str(row['name']) +"- "+ firstDayDate.strftime("%Y-%m-%d") +" to " + lastDayDate.strftime("%Y-%m-%d") + "',"+ str(row['bookRate']) +",1," + str(rental) + "," + str(row['ID']) + ")"
+            query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values (" + str(invoiceID['ID']) + ","+str(counter)+",'Monthly Rental for "+ str(row['name']) +"- "+ firstDayDate.strftime("%Y-%m-%d") +" to " + lastDayDate.strftime("%Y-%m-%d") + "',"+ str(row['bookRate']) +",1," + str(rental) + "," + str(row['ID']) + ")"
 
 
     
-          if row['rateType'] == "MONTHLY":
-            rental = row['bookRate']
-          if row['rateType'] == "WEEKLY":
-            rental = row['bookRate'] * 4
-          if row['rateType'] == "HOURLY":
-            rental = row['bookRate'] * 24 * numDays
-          if row['rateType'] == "DAILY":
-            rental = row['bookRate'] * numDays
+        #    if row['rateType'] == "MONTHLY":
+        #      rental = row['bookRate']
+        #    if row['rateType'] == "WEEKLY":
+        #      rental = row['bookRate'] * 4
+        #    if row['rateType'] == "HOURLY":
+        #      rental = row['bookRate'] * 24 * numDays
+        #    if row['rateType'] == "DAILY":
+        #      rental = row['bookRate'] * numDays
     
-          query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values (" + str(invoiceID['ID']) + ","+str(counter)+",'Monthly Rental for "+ str(row['spaceID']) +"',0,1," + str(rental) + "," + str(row['ID']) + ")"
+        #   query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values (" + str(invoiceID['ID']) + ","+str(counter)+",'Monthly Rental for "+ str(row['spaceID']) +"',0,1," + str(rental) + "," + str(row['ID']) + ")"
+
+          else:
+            # deal cases for "Resource"
+            bookFrom = row['bookFrom']
+            bookTo = row['bookTo']
+            duration = bookTo - bookFrom
+            billHours = duration.total_seconds() / 3600
+            rental = row['bookRate'] * billHours
+
+            query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values (" + str(invoiceID['ID']) + ","+str(counter)+",'Resource Rental for "+ str(row['name']) +"- "+ firstDayDate.strftime("%Y-%m-%d %H:%M:S") +" to " + lastDayDate.strftime("%Y-%m-%d %H:%M:%S") + "',"+ str(row['bookRate']) + ","+ str(billHours) + "," + str(rental) + "," + str(row['ID']) + ")"
 
           result = commit_query_to_db(query)
 
           invAmt = invAmt + rental
           counter = counter + 1
 
+        
         # now update invoiceID in the invoice table
         query = "update invoices set invoiceamt = " + str(invAmt) + ",taxamount = 0, amtwithtax = " + str(invAmt) + ", discount = 0 where ID = " + str(invoiceID['ID'])
         result = commit_query_to_db(query)

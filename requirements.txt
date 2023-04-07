@@ -4,3 +4,4 @@ sqlalchemy
 pymysql
 flask-login
 flask-sqlalchemy
+dateutil

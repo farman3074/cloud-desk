@@ -4,6 +4,12 @@
 # MONTHLYMMYYYY - Monthly customer invoice MM and YYYY
 # SPECIAL - Invoices generated for clearances or other mid month billing
 
+#space types
+# Executive Office
+# Private Office
+# Work Desk 
+# Resource - boardrooms, meeting rooms, projectors etc
+
 # billing types
 # selected while booking - applied on booking rates
 # MONTHLY - Monthly billing starting 1st of every month
