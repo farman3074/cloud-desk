@@ -215,10 +215,10 @@ def new_invoice():
 def show_reporting():
   return render_template("reporting.html", title="Reporting", userName=current_user.userEmail, userGroup = current_user.userGroup)
 
-@app.route("/accounting")
+@app.route("/backoffice")
 @login_required
 def show_accounting():
-  return render_template("accounting.html", title="Accounting", userName=current_user.userEmail, userGroup = current_user.userGroup)
+  return render_template("accounting.html", title="Back Office", userName=current_user.userEmail, userGroup = current_user.userGroup)
 
 
 

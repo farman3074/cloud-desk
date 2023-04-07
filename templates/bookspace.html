@@ -37,6 +37,12 @@
             <th scope="row">Area</th>
             <td>{{ space['area'] }}</td>
           <tr>
+            <th scope="row">List Price</th>
+            <td>{{ space['listRate'] }}</td>
+          <tr>
+            <th scope="row">Rate Type</th>
+            <td>{{ space['rateType'] }}</td>
+          <tr>
             <th scope="row">Available</th>
             <td>{{ space['isempty'] }}</td>
         </tbody>
@@ -66,19 +72,29 @@
              <tr>
               <th scope="row">Start Date</th>
               <td>
+                {% if "HOURLY" == space['rateType'] %}
+                 <input type="datetime-local" class="form-control" name="startInput" placeholder="dd-mm-yyyy hh:mm:ss" value=""
+        min="{{ currentdate }}" max="2030-12-31 00:00:00">
+                {% else %}
                  <input type="date" class="form-control" name="startInput" placeholder="dd-mm-yyyy" value=""
         min="{{ currentdate }}" max="2030-12-31">
+                {% endif %}
               </td>
                <tr>
               <th scope="row">End Date</th>
               <td>
-                 <input type="date" class="form-control" name="endInput" placeholder="dd-mm-yyyy" value=""
+                {% if "HOURLY" == space['rateType'] %}
+                 <input type="datetime-local" class="form-control" name="endInput" placeholder="dd-mm-yyyy hh:mm:ss" value=""
+        min="{{ currentdate }}" max="2030-12-31 00:00:00">
+                {% else %}
+                <input type="date" class="form-control" name="endInput" placeholder="dd-mm-yyyy" value=""
         min="{{ currentdate }}" max="2030-12-31">
+                {% endif %}
               </td>
                  <tr>
               <th scope="row">Booking Rate</th>
               <td>
-                 <input type="text" class="form-control" name="rateInput" >
+                 <input type="text" class="form-control" name="rateInput" min = "{{ space['listRate'] }}">
               </td>
                       <tr>
               <th scope="row">Rate Type</th>
@@ -88,7 +104,7 @@
                   <option value = 'MONTHLY'> MONTHLY </option>
                    <option value = 'WEEKLY'> WEEKLY </option>
                    <option value = 'DAILY'> DAILY </option>
-                   <option value = 'HOURLY'> HOURLY </option>
+                   <!--<option value = 'HOURLY'> HOURLY </option>-->
                 </select>
               </td>
               <tr>
