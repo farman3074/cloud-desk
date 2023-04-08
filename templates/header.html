@@ -1,3 +1,4 @@
+<!--
 <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -54,7 +55,7 @@
     </style>
 
     
-    <!-- Custom styles for this template -->
+
     <link href="headers.css" rel="stylesheet">
   </head>
   <body>
@@ -82,20 +83,21 @@
     <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
   </symbol>
 </svg>
+-->
 
-
-<div class="container">
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+<div class="container-fluid">
+    <header class="d-flex flex-wrap justify-content-left py-3 mb-4 border-bottom">
+      <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
         
-  <!--<nav class="navbar navbar-expand-lg bg-body-tertiary">-->
-    <div class="container-fluid">
-  <img src="static/logohead.jpg" class="img-fluid" alt="Cloud Desk">
-    </div>
+      <!--<nav class="navbar navbar-expand-lg bg-body-tertiary">-->
+      <div class="container-fluid">
+        <img src="static/logohead.jpg" class="img-fluid" alt="Cloud Desk">
+      </div>
  <!--       <span class="fs-4">{{title}}</span> -->
-         <div class="container-fluid">
-    <span class="navbar-brand mb-0 h1"><h4>CloudDesk Terminal</h4></span>
-  </div>
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1"><h4>CloudDesk Terminal</h4>
+        </span>
+      </div>
       </a>
 
       <ul class="nav nav-pills">
@@ -104,18 +106,37 @@
         <li class="nav-item"><a href="/spaces" class="nav-link {% if "Spaces" == title %}active{% endif %}"><h6>Spaces</h6></a></li>
         <li class="nav-item"><a href="/invoicing" class="nav-link {% if "Invoicing" == title %}active{% endif %}"><h6>Invoicing</h6></a></li>
         <li class="nav-item"><a href="/reporting" class="nav-link {% if "Reporting" == title %}active{% endif %}"><h6>Reporting</h6></a></li>
-        <li class="nav-item"><a href="/backoffice" class="nav-link {% if "Back Office" == title %}active{% endif %}"><h6>Back Office</h6></a></li>
-        <li class="navbar-text">
-        <p><small>| {{userName}} |</small></p>
+    <!--    <li class="nav-item"><a href="/backoffice" class="nav-link {% if "Back Office" == title %}active{% endif %}"><h6>Back Office</h6></a></li> -->
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle {% if "Back Office" == title %}active{% endif %}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          Back Office
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Petty Cash Postings</a>
+          <a class="dropdown-item" href="#">Ledger Postings</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Extras Posting</a>
+        </div>
       </li>
-        <li class="nav-item"><a href="/logout" class="nav-link"><h5>Logout</h5></a></li>
+        <!--<li class="navbar-text">
+        {{userName}} </p>
+      </li>-->
+        <li class="nav-item"><a href="/logout" class="nav-link active"><h6>Logout</h6></a>
+        </li>
       </ul>
-       
+      <span class="navbar-text">
+        <small>   User: {{userName}}</small>
+      </span>
     </header>
 <!-- <P>Welcome {{userName}}</P> -->
 <!--  </nav>-->
-  </div>
- 
+ </div>
+  <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
    {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>
@@ -125,4 +146,5 @@
     </ul>
   {% endif %}
 {% endwith %}
+
   <div class="b-example-divider"></div>
