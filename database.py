@@ -155,7 +155,7 @@ def creat_monthly_invoice(startdate,enddate, memberid):
       #query = "Select bookings.*,spaces.name from bookings,spaces where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "' and bookings.spaceID = spaces.ID"
 
       #MODIFIED to cover partial months also
-      query = "Select bookings.*,spaces.name,spaces.type from bookings,spaces where memberID = '" + str(memberid) + "' and ((spaces.type != 'Resource' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookTo >= '" + firstDayDate.strftime("%Y-%m-%d") + "') or (spaces.type = 'Resource' and bookings.bookFrom >= '" + lastMonthStart.strftime("%Y-%m-%d") + "and bookings.bookTo < '" + lastDayDate.strftime("%Y-%m-%d") + "')) and bookings.spaceID = spaces.ID"
+      query = "Select bookings.*,spaces.name,spaces.type from bookings,spaces where memberID = '" + str(memberid) + "' and ((spaces.type != 'Resource' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookTo >= '" + firstDayDate.strftime("%Y-%m-%d") + "') or (spaces.type = 'Resource' and bookings.bookFrom >= '" + lastMonthStart.strftime("%Y-%m-%d") + "' and bookings.bookTo < '" + firstDayDate.strftime("%Y-%m-%d") + "')) and bookings.spaceID = spaces.ID"
 
 #      query = "Select * from bookings where memberID = '" + str(memberid) + "' and bookings.bookFrom <= '" + firstDayDate.strftime("%Y-%m-%d") + "' and bookings.bookto >= '" + lastDayDate.strftime("%Y-%m-%d") + "'"
 
@@ -173,9 +173,9 @@ def creat_monthly_invoice(startdate,enddate, memberid):
         invoiceID = commit_invoice_to_db(query)
         # now create LIs against each booking
         invAmt = 0
+        counter = 1
         for row in bookings:
-          counter = 1
-
+  
           if row['type'] != "Resource":
             # Check for partial months and first months post booking (partial invoicing)
             billDays = numDays 
@@ -242,7 +242,7 @@ def creat_monthly_invoice(startdate,enddate, memberid):
             billHours = duration.total_seconds() / 3600
             rental = row['bookRate'] * billHours
 
-            query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values (" + str(invoiceID['ID']) + ","+str(counter)+",'Resource Rental for "+ str(row['name']) +"- "+ firstDayDate.strftime("%Y-%m-%d %H:%M:S") +" to " + lastDayDate.strftime("%Y-%m-%d %H:%M:%S") + "',"+ str(row['bookRate']) + ","+ str(billHours) + "," + str(rental) + "," + str(row['ID']) + ")"
+            query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values (" + str(invoiceID['ID']) + ","+str(counter)+",'Resource Rental for "+ str(row['name']) +"- "+ bookFrom.strftime("%Y-%m-%d %H:%M:%S") +" to " + bookTo.strftime("%Y-%m-%d %H:%M:%S") + "',"+ str(row['bookRate']) + ","+ str(billHours) + "," + str(rental) + "," + str(row['ID']) + ")"
 
           result = commit_query_to_db(query)
 
