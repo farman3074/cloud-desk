@@ -222,7 +222,8 @@ def show_reporting():
 @app.route("/backoffice")
 @login_required
 def show_accounting():
-  return render_template("accounting.html", title="Back Office", userName=current_user.userEmail, userGroup = current_user.userGroup)
+#  return render_template("accounting.html", title="Back Office", userName=current_user.userEmail, userGroup = current_user.userGroup)
+  return render_template("testheader.html", title="Dash Board", userName=current_user.userEmail, userGroup = current_user.userGroup)
 
 
 
