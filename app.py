@@ -1,7 +1,7 @@
 from flask import Flask,render_template,request,redirect,flash
 #import datafile
 from datetime import datetime
-from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db,load_active_members_from_db,creat_monthly_invoice
+from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db,load_active_members_from_db,creat_monthly_invoice,commit_ledger_to_db
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager
 from flask_login import login_user, login_required, logout_user, current_user
@@ -225,8 +225,50 @@ def show_accounting():
 #  return render_template("accounting.html", title="Back Office", userName=current_user.userEmail, userGroup = current_user.userGroup)
   return render_template("testheader.html", title="Dash Board", userName=current_user.userEmail, userGroup = current_user.userGroup)
 
+@app.route("/ledger")
+@login_required
+def new_ledger():
+  return render_template("ledger.html", title="Ledger Entry", userName=current_user.userEmail, userGroup = current_user.userGroup)
 
 
+@app.route("/pettycash")
+@login_required
+def new_petty():
+  return render_template("pettycash.html", title="Petty Cash Entry", userName=current_user.userEmail, userGroup = current_user.userGroup)
+
+@app.route("/commitledger",methods =["POST"])
+@login_required
+def commit_ledger():
+
+  amount = int(request.form.get("amount"))
+  description = request.form.get("instrumentRef") + "-" + request.form.get("instrumentDate") + "-" + request.form.get("desc")
+  entryType = request.form.get("entryType")
+  
+  if entryType != "InvDeposit" or entryType != "ODeposit":
+    amount = amount * -1
+  
+  query = "insert into ledger (entryDate,entryRef,entryType,entryDesc,entryValue) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "',0,'" + entryType + "','" + description + "'," + str(amount) + ")"
+  
+  ledgerID = commit_ledger_to_db(query)
+  
+  # update petty cash register for Petty Cash withdrawls
+  if entryType == "Petty":
+    query = "insert into pettycash (entryDate,entryDesc,entryValue,entryRef) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "','Petty Cash addition'," + str(amount * -1) + ",'" + str(ledgerID['ID']) + "')"
+    result = commit_query_to_db(query)
+
+  flash('Entry posted in ledger')
+  return redirect("/ledger")
+
+@app.route("/commitpetty",methods =["POST"])
+@login_required
+def commit_petty():
+  amount = int(request.form.get("amount"))
+  query = "insert into pettycash (entryDate,entryDesc,entryValue,entryRef,entryHead) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "','"+ request.form.get("desc") +"'," + str(amount * -1) + ",0,'" + request.form.get("expHead") + "')"
+  result = commit_query_to_db(query)
+  flash('Entry posted in Petty Cash Register')
+  return redirect("/pettycash")
+
+  
 @app.route("/logout")
 @login_required
 def logout():

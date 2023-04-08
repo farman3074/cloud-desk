@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cloud Desk Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  </head>
+  
+  <body>
+    
+    {% include 'header.html' %}
+    
+    <div class="container">
+          <h3>Petty Cash Entry</h3>
+
+          <form action="/commitpetty" method="POST">
+          <div class="form-group">
+               <label>Description</label>
+               <input type="text" class="form-control" name="desc" >
+             </div>
+            <div class="form-group">
+        <label>Amount</label>
+        <input type="number" class="form-control" name="amount" >
+                </div>
+              <div class="form-group">
+              <label>Entry Type</label>
+              <select class="form-select" aria-label="select" name = "expHead" >
+          <option selected>Select Expense Head</option>    
+          <option value = 'Fuel'>Fuel</option>
+          <option value = 'Entertainment'>Entertainment</option>
+          <option value = 'Housekeeping'>Housekeeping Purchases</option>
+          <option value = 'Repair'>Repair Maintenance</option>
+          <option value = 'Grocery'>Grocery</option>
+          <option value = 'Bills'>Bills</option>
+          <option value = 'Purchase'>Other Purchases</option>
+        </select>
+            </div>
+          
+             <div class="form-group">
+        <button type="submit" class="btn btn-primary">POST</button>
+       <a class="btn btn-primary" href="/dashboard" role="button">CANCEL</a> 
+             </div>
+      </form>
+    </div>
+  </body>
+</html>

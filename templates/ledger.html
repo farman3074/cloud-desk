@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cloud Desk Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  </head>
+  
+  <body>
+    
+    {% include 'header.html' %}
+    
+    <div class="container">
+          <h3>New Ledger Entry</h3>
+
+          <form action="/commitledger" method="POST">
+            <div class="form-group">
+              <label>Entry Type</label>
+              <select class="form-select" aria-label="select" name = "entryType" >
+          <option selected>Select Entry Type</option>    
+          <option value = 'Salary'>Salary Payment</option>
+          <option value = 'Vendor'>Vendor Payment</option>
+          <option value = 'Petty'>Petty Cash Withdrawl</option>
+          <option value = 'Payment'>Other Payment</option>
+          <option value = 'InvDeposit'>Investor Deposit</option>
+          <option value = 'ODeposit'>Other Deposit</option>
+        </select>
+            </div>
+             <div class="form-group">
+        <label>Instrument Reference</label>
+        <input type="text" class="form-control" name="instrumentRef" >
+             </div>
+             <div class="form-group">
+        <label>Instrument Date</label>
+        <input type="date" class="form-control" name="instrumentDate" placeholder="dd-mm-yyyy" value=""
+        max="2030-12-31">
+             </div>
+                <div class="form-group">
+        <label>Amount</label>
+        <input type="number" class="form-control" name="amount" >
+                </div>
+             <div class="form-group">
+               <label>Description</label>
+               <input type="text" class="form-control" name="desc" >
+             </div>
+             <div class="form-group">
+        <button type="submit" class="btn btn-primary">POST</button>
+       <a class="btn btn-primary" href="/dashboard" role="button">CANCEL</a> 
+             </div>
+      </form>
+    </div>
+  </body>
+</html>

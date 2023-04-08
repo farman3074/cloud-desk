@@ -73,7 +73,16 @@ def commit_invoice_to_db(query):
     result = conn.execute(text("select ID from invoices ORDER BY ID DESC LIMIT 1"))
     rows = result.all()
     return rows[0]._mapping
-  
+
+def commit_ledger_to_db(query):
+  with engine.connect() as conn:
+    result = conn.execute(text(query))
+    result = conn.execute(text("select ID from ledger ORDER BY ID DESC LIMIT 1"))
+    rows = result.all()
+    return rows[0]._mapping
+
+
+
 def commit_query_to_db(query):
   with engine.connect() as conn:
     result = conn.execute(text(query))
