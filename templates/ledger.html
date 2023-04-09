@@ -15,9 +15,9 @@
           <h3>New Ledger Entry</h3>
 
           <form action="/commitledger" method="POST">
-            <div class="form-group">
+            <div class="form-group mb-2">
               <label>Entry Type</label>
-              <select class="form-select" aria-label="select" name = "entryType" >
+              <select class="form-select" aria-label="select" name = "entryType" required>
           <option selected>Select Entry Type</option>    
           <option value = 'Salary'>Salary Payment</option>
           <option value = 'Vendor'>Vendor Payment</option>
@@ -27,24 +27,24 @@
           <option value = 'ODeposit'>Other Deposit</option>
         </select>
             </div>
-             <div class="form-group">
+             <div class="form-group mb-2">
         <label>Instrument Reference</label>
-        <input type="text" class="form-control" name="instrumentRef" >
+        <input type="text" class="form-control" name="instrumentRef" required >
              </div>
-             <div class="form-group">
+             <div class="form-group mb-2">
         <label>Instrument Date</label>
         <input type="date" class="form-control" name="instrumentDate" placeholder="dd-mm-yyyy" value=""
         max="2030-12-31">
              </div>
-                <div class="form-group">
+                <div class="form-group mb-2">
         <label>Amount</label>
-        <input type="number" class="form-control" name="amount" >
+        <input type="number" class="form-control" name="amount" required >
                 </div>
-             <div class="form-group">
+             <div class="form-group mb-2">
                <label>Description</label>
-               <input type="text" class="form-control" name="desc" >
+               <input type="text" class="form-control" name="desc" required >
              </div>
-             <div class="form-group">
+             <div class="form-group mb-2">
         <button type="submit" class="btn btn-primary">POST</button>
        <a class="btn btn-primary" href="/dashboard" role="button">CANCEL</a> 
              </div>

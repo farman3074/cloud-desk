@@ -268,7 +268,21 @@ def commit_petty():
   flash('Entry posted in Petty Cash Register')
   return redirect("/pettycash")
 
+@app.route("/extras")
+@login_required
+def new_extras():
+  members = load_members_from_db()
+  return render_template("extras.html", title="Extras Entry",members=members, userName=current_user.userEmail, userGroup = current_user.userGroup)
+
+@app.route("/commitextras",methods=["POST"])
+@login_required
+def commit_extras():
+  query = "insert into extras (entryDate,memberID,extrasDesc,fromDate,toDate,amount,extrasNotes) values ('"+ datetime.now().strftime("%Y-%m-%d") + "'," + request.form.get("memberID") + ",'" + request.form.get("extrasDesc") + "','" + request.form.get("fromDate") + "','" + request.form.get("toDate") + "'," + str(request.form.get("amount")) + ",'" + request.form.get("notes") + "')"
+  result = commit_query_to_db(query)
+  flash('Entry posted in Extras Register')
+  return redirect("/extras")
   
+
 @app.route("/logout")
 @login_required
 def logout():

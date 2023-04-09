@@ -15,17 +15,17 @@
           <h3>Petty Cash Entry</h3>
 
           <form action="/commitpetty" method="POST">
-          <div class="form-group">
+          <div class="form-group mb-2">
                <label>Description</label>
-               <input type="text" class="form-control" name="desc" >
+               <input type="text" class="form-control" name="desc" required >
              </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
         <label>Amount</label>
-        <input type="number" class="form-control" name="amount" >
+        <input type="number" class="form-control" name="amount" required >
                 </div>
-              <div class="form-group">
+              <div class="form-group mb-2">
               <label>Entry Type</label>
-              <select class="form-select" aria-label="select" name = "expHead" >
+              <select class="form-select" aria-label="select" name = "expHead" required >
           <option selected>Select Expense Head</option>    
           <option value = 'Fuel'>Fuel</option>
           <option value = 'Entertainment'>Entertainment</option>
@@ -37,7 +37,7 @@
         </select>
             </div>
           
-             <div class="form-group">
+             <div class="form-group mb-2">
         <button type="submit" class="btn btn-primary">POST</button>
        <a class="btn btn-primary" href="/dashboard" role="button">CANCEL</a> 
              </div>
