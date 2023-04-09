@@ -258,9 +258,31 @@ def creat_monthly_invoice(startdate,enddate, memberid):
           invAmt = invAmt + rental
           counter = counter + 1
 
+        # find extras for this members if any and add line items
+        # invoiceID = 0 means it is not included in any invoice
+        query = "Select * from extras where memberID = '" + str(memberid) + "' and invoiceID = '0' and fromDate >= '" + lastMonthStart.strftime("%Y-%m-%d") + "'"
+        results = conn.execute(text(query))
+        extras_list = results.all()
+        extras = []
+        for row in extras_list:
+          extras.append(row._mapping)
+        if len(extras) > 0:
+          for row in extras:
+            rental = row['amount']
+            query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values (" + str(invoiceID['ID']) + ","+str(counter)+",'"+ row['extrasDesc'] +"- "+ row['fromDate'].strftime("%Y-%m-%d") +" to " + row['toDate'].strftime("%Y-%m-%d") + "',"+ str(rental) + ",1," + str(rental) + "," + str(row['ID']) + ")"
+
+            result = commit_query_to_db(query)
+            invAmt = invAmt + rental
+            counter = counter + 1
+
+            # update extras line entry with the attached invoice ID
+            query = "update extras set invoiceID = "+ str(invoiceID['ID']) + " where ID = "+ str(row['ID'])
+            
+            result = commit_query_to_db(query)
+          # extras code ends here
         
-        # now update invoiceID in the invoice table
+        # now update amounts in the invoice table
         query = "update invoices set invoiceamt = " + str(invAmt) + ",taxamount = 0, amtwithtax = " + str(invAmt) + ", discount = 0 where ID = " + str(invoiceID['ID'])
         result = commit_query_to_db(query)
-  
+
   return 0
