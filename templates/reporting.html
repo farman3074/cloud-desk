@@ -11,7 +11,45 @@
   <body>
     {% include 'header.html' %}
     <div class="container">
-  
+      <table class="table table-striped">
+        <thead class="border border-warning">
+          <tr>
+            <th scope="col"><h5>Report Name</h5></th>
+            <th scope="col"><h5>Description</h5></th>
+            <th scope="col"><h5>Parameters</h5></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope = "row">Petty Cash Report</th>
+            <td>Generate Petty Cash entry report for a period</td>
+            <td>
+              <form action="/reportpetty" method="POST">
+                <div class="form-group mb-2">
+                  <label>Period</label>
+                   <input type="month" class="form-control" name="period" >
+                <button type="submit" class="btn btn-primary">Generate</button>
+                </div>
+              </form>
+            </td>
+          </tr>
+          <tr>
+            <th scope = "row">GL Report</th>
+            <td>Generate General Ledger report for a period</td>
+            <td>
+              <form action="/reportledger" method="POST">
+                <div class="form-group mb-2">
+                  <label>Period</label>
+                   <input type="month" class="form-control" name="period" >
+                <button type="submit" class="btn btn-primary">Generate</button>
+                </div>
+              </form>
+            </td>
+          </tr>
+          
+        </tbody>
+      </table>
+       {% include 'footer.html' %}
     </div>
   </body>
 

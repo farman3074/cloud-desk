@@ -217,7 +217,9 @@ def new_invoice():
 @app.route("/reporting")
 @login_required
 def show_reporting():
-  return render_template("testheader.html", title="Reporting", userName=current_user.userEmail, userGroup = current_user.userGroup)
+  currentDate = datetime.now()
+  currentMonth = str(currentDate.year) + "-" + str(currentDate.month)
+  return render_template("reporting.html", title="Reporting", userName=current_user.userEmail, userGroup = current_user.userGroup, currentMonth = currentMonth)
 
 @app.route("/backoffice")
 @login_required

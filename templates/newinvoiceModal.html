@@ -5,35 +5,43 @@
         <!-- Modal Header -->
         <div class="modal-header">
           <h4 class="modal-title">Generate New Invoice</h4>
-          <button type="button" class="close" data-dismiss="modal">X</button>
+          <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
         </div>
         
         <!-- Modal body -->
         <div class="modal-body">
           <form action="/newinvoice" method="POST">
-            <div>
+            <div class="form-group mb-4">
               <h6>Generate invoice for</h6>
-              <select class="form-select" aria-label="" name = 'memberInput' >
+              <select class="form-select md-4" aria-label="" name = 'memberInput' >
                 <option selected value = "0">ALL MEMBERS</option>
               {% for member in members %}
                 <option value = "{{ member['ID'] }}"> {{ member['name']}} </option>
               {% endfor %}      
               </select>
+            </div>
+            <div class="form-group mb-4">
               <h6>From</h6>
-               <input type="date" class="form-control" name="fromInput" placeholder="dd-mm-yyyy" value="{{ currentdate }}"
+               <input type="date" class="form-control md-4" name="fromInput" placeholder="dd-mm-yyyy" value="{{ currentdate }}"
          max="2030-12-31">
+            </div>
+            <div class="form-group mb-4">
               <h6>To</h6>
-               <input type="date" class="form-control" name="toInput" placeholder="dd-mm-yyyy" value="{{ currentdate }}"
+               <input type="date" class="form-control md-4" name="toInput" placeholder="dd-mm-yyyy" value="{{ currentdate }}"
         min="{{ currentdate }}" max="2030-12-31">
             </div>
+            <div class="form-group mb-4">
             <h6>Selecting ALL MEMBERS will generate current months invoices for all active members!</h6>
-            <button type="submit" class="btn btn-warning" >Generate</button>
+            </div>
+            <div class="form-group mb-4">
+            <button type="submit" class="btn btn-warning md-4" >Generate</button>
+            </div>
           </form>
         </div>
         
         <!-- Modal footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary md-4" data-dismiss="modal">Close</button>
         </div>
         
       </div>

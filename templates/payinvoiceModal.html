@@ -5,33 +5,43 @@
       <!-- Modal Header -->
       <div class="modal-header">
         <h4 class="modal-title">Generate New Invoice</h4>
-        <button type="button" class="close" data-dismiss="modal">X</button>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
         
       <!-- Modal body -->
       <div class="modal-body">
         <form action="/commitpayment" method="POST">
+          <div class="form-group mb-4">
           <label>Payment Instrument</label>
-          <select class="form-select" aria-label="select" name = "instrumentType" >
+          <select class="form-select md-4" aria-label="select" name = "instrumentType" >
             <option selected>Chose Payment Instrument</option>    
             <option value = 'Cheque'>Cheque</option>
             <option value = 'Bank Desposit'>Bank Deposit</option>
           </select>
+          </div>
+          <div class="form-group mb-4">
           <label>Instrument Reference</label>
-          <input type="text" class="form-control" name="instrumentRef" >
+          <input type="text" class="form-control md-4" name="instrumentRef" >
+          </div>
+            <div class="form-group mb-4">
           <label>Instrument Date</label>
-          <input type="date" class="form-control" name="instrumentDate" placeholder="dd-mm-yyyy" value=""
+          <input type="date" class="form-control md-4" name="instrumentDate" placeholder="dd-mm-yyyy" value=""
         max="2030-12-31">
+            </div>
+          <div class="form-group mb-4">
           <label>Amount</label>
-          <input type="text" class="form-control" name="amount" >
+          <input type="text" class="form-control md-4" name="amount" >
           <input type="hidden" name="invoiceID" value={{ invoice['ID'] }}>
-          <button type="submit" class="btn btn-primary">POST</button>
+          </div>
+          <div class="form-group mb-4">
+          <button type="submit" class="btn btn-warning">POST</button>
+          </div>
         </form>
       </div>
       
       <!-- Modal footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
       
     </div>
