@@ -1,0 +1,12 @@
+{% for booking in bookings %}
+    <tr>
+      <th scope="row">{{ booking['ID'] }}</th>
+      <td>{{ booking['name'] }}</td>
+      <td>{{ booking['type'] }}</td>
+      <td>{{ booking['floor'] }}</td>
+      <td>{{ booking['seats'] }}</td>
+      <td>{{ booking['bookFrom'] }}</td>
+      <td>{{ booking['bookTo'] }}</td>
+      <td>{{ booking['bookDate'] }}</td>
+      <td>{{ booking['bookRate'] }}</td>
+{% endfor %}  
