@@ -290,6 +290,11 @@ def commit_extras():
   flash('Entry posted in Extras Register')
   return redirect("/extras")
   
+@app.route("/maintenance")
+@login_required
+def maintenance_page():
+  return render_template("maintenance.html", title="Maintenace Management", userName=current_user.userEmail, userGroup = current_user.userGroup)
+
 
 @app.route("/logout")
 @login_required
