@@ -99,7 +99,18 @@ def load_bookings_from_db(id):
     for row in rows:
       bookings.append(row._mapping)
     return bookings
-    
+
+def load_bookings_bymember_from_db(id):
+  with engine.connect() as conn:
+    query = f"SELECT * FROM clouddesk.bookings, clouddesk.spaces where  bookings.memberID = { id } and clouddesk.bookings.ID = clouddesk.spaces.ID"
+    result = conn.execute(text(query))
+    rows = result.all()
+    bookings = []
+    for row in rows:
+      bookings.append(row._mapping)
+    return bookings
+
+
 def load_invoices_from_db():
   with engine.connect() as conn:
     result = conn.execute(text("select invoices.ID,invoicedate,duedate,header,invoiceamt,taxamount,discount,amtwithtax,ispaid,members.name from invoices,members where invoices.memberID = members.ID"))
