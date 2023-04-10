@@ -10,7 +10,12 @@ import os
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 #app.SQLALCHEMY_DATABASE_URI = os.environ['DB_CONNECT_STR']
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['SQLALCHEMY_DATABASE_URI']
+
+#PRODUCTION
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['SQLALCHEMY_DATABASE_URI']
+#DEVELOPMENT
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['SQLALCHEMY_DATABASE_URI_DEV']
+
 
 db = SQLAlchemy()
 db.init_app(app)

@@ -74,10 +74,10 @@
               <td>
                 {% if "HOURLY" == space['rateType'] %}
                  <input type="datetime-local" class="form-control" name="startInput" placeholder="dd-mm-yyyy hh:mm:ss" value=""
-        min="{{ currentdate }}" max="2030-12-31 00:00:00">
+        >
                 {% else %}
                  <input type="date" class="form-control" name="startInput" placeholder="dd-mm-yyyy" value=""
-        min="{{ currentdate }}" max="2030-12-31">
+        >
                 {% endif %}
               </td>
                <tr>
@@ -85,10 +85,10 @@
               <td>
                 {% if "HOURLY" == space['rateType'] %}
                  <input type="datetime-local" class="form-control" name="endInput" placeholder="dd-mm-yyyy hh:mm:ss" value=""
-        min="{{ currentdate }}" max="2030-12-31 00:00:00">
+       >
                 {% else %}
                 <input type="date" class="form-control" name="endInput" placeholder="dd-mm-yyyy" value=""
-        min="{{ currentdate }}" max="2030-12-31">
+        >
                 {% endif %}
               </td>
                  <tr>

@@ -4,8 +4,10 @@ from datetime import datetime,date,timedelta
 from dateutil.relativedelta import relativedelta
 import os
 
-
-db_connection_str = os.environ['DB_CONNECT_STR']
+#PRODUCTION
+#db_connection_str = os.environ['DB_CONNECT_STR']
+#DEVELOPMENT
+db_connection_str = os.environ['DB_CONNECT_STR_DEV']
 
 engine = create_engine(db_connection_str,connect_args={"ssl":{"ssl_ca": "/etc/ssl/cert.pem"}})
 
