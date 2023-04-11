@@ -1,3 +1,13 @@
+<script>
+$(document).ready(function() {
+    $('form').submit(function() {
+        $(this).find(':button[type=submit]').prop('disabled', true);
+ 
+        // For this example, don't actually submit the form
+        // event.preventDefault();
+    });
+});
+</script>
 <!--<div><button type="button" class="btn btn-outline-warning">Contact Admin</button></div>
 <div><p><small>Copyright (C) Unity Digital</small></p></div>
 

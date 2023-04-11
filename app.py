@@ -86,7 +86,7 @@ def edit_member(id):
 @app.route("/commitmember",methods =["POST"])
 @login_required
 def commit_member():
-  query = "update members set name ='" + request.form.get('nameInput') + "', company = '" + request.form.get('companyInput') + "', email ='" + request.form.get('emailInput') + "', phone = '" +  request.form.get('phoneInput') + "', nature = '" + request.form.get('natureInput') + "', address = '" + request.form.get('addressInput') + "' where ID= " + request.form.get('idInput')
+  query = "update members set name ='" + request.form.get('nameInput') + "', company = '" + request.form.get('companyInput') + "', email ='" + request.form.get('emailInput') + "', phone = '" +  request.form.get('phoneInput') + "', nature = '" + request.form.get('natureInput') + "', address = '" + request.form.get('addressInput') + "', cnic = '" + request.form.get('cnicInput') + "', log_user = " + str(current_user.id) + " where ID= " + request.form.get('idInput')
   result = commit_member_to_db(query)
   return redirect(f"/viewmember/{request.form.get('idInput')}")
 
@@ -98,7 +98,7 @@ def add_member():
 @app.route("/commitaddmember",methods =["POST"])
 @login_required
 def commit_add_member():
-  query = "insert into members (`name`, `company`, `email`, `phone`, `nature`, `address`, `membership_date`) VALUES ('" + request.form.get('nameInput') + "', '" + request.form.get('companyInput') + "','" + request.form.get('emailInput') + "','" +  request.form.get('phoneInput') + "','" + request.form.get('natureInput') + "','" + request.form.get('addressInput') + "','" + datetime.now().strftime("%Y-%m-%d") + "')" 
+  query = "insert into members (`name`, `company`, `email`, `phone`, `nature`, `address`, `membership_date`,`cnic`,`log_user`) VALUES ('" + request.form.get('nameInput') + "', '" + request.form.get('companyInput') + "','" + request.form.get('emailInput') + "','" +  request.form.get('phoneInput') + "','" + request.form.get('natureInput') + "','" + request.form.get('addressInput') + "','" + datetime.now().strftime("%Y-%m-%d") + "','"+ request.form.get('cnicInput') +"',"+ str(current_user.id) +")" 
   result = commit_member_to_db(query)
   return redirect("/members")
 
@@ -129,14 +129,14 @@ def add_space():
 
 @app.route("/commitspace",methods =["POST"])
 def commit_space():
-  query = "update spaces set name ='" + request.form.get('nameInput') + "', type = '" + request.form.get('typeInput') + "', floor ='" + request.form.get('floorInput') + "', seats = " +  request.form.get('seatsInput') + ", area = " + request.form.get('areaInput') + ", isempty = '" + request.form.get('emptyInput') + "', listRate = '"+ request.form.get('rateInput') +"', rateType = '"+ request.form.get('ratetypeInput') +"' where ID= " + request.form.get('idInput')
+  query = "update spaces set name ='" + request.form.get('nameInput') + "', type = '" + request.form.get('typeInput') + "', floor ='" + request.form.get('floorInput') + "', seats = " +  request.form.get('seatsInput') + ", area = " + request.form.get('areaInput') + ", isempty = '" + request.form.get('emptyInput') + "', listRate = '"+ request.form.get('rateInput') +"', rateType = '"+ request.form.get('ratetypeInput') +"', log_user = "+ str(current_user.id)+" where ID= " + request.form.get('idInput')
   result = commit_space_to_db(query)
   return redirect(f"/viewspace/{request.form.get('idInput')}")
 
 @app.route("/commitaddspace",methods =["POST"])
 @login_required
 def commit_add_space():
-  query = "insert into spaces(`name`, `floor`, `seats`, `area`, `type`, `isempty`, `listRate`, `rateType`) VALUES ('" + request.form.get('nameInput') + "','" + request.form.get('floorInput') + "','" +  request.form.get('seatsInput') + "','" + request.form.get('areaInput') + "','" + request.form.get('typeInput') + "','Yes','" + request.form.get('rateInput') + "','" + request.form.get('ratetypeInput') + "')"
+  query = "insert into spaces(`name`, `floor`, `seats`, `area`, `type`, `isempty`, `listRate`, `rateType`,`log_user`) VALUES ('" + request.form.get('nameInput') + "','" + request.form.get('floorInput') + "','" +  request.form.get('seatsInput') + "','" + request.form.get('areaInput') + "','" + request.form.get('typeInput') + "','Yes','" + request.form.get('rateInput') + "','" + request.form.get('ratetypeInput') + "'," + str(current_user.id) + ")"
   result = commit_space_to_db(query)
   return redirect("/spaces")
 
@@ -152,17 +152,17 @@ def book_space(id):
 @app.route("/commitbooking",methods =["POST"])
 @login_required
 def commit_booking():
-  query = "insert into bookings (memberID, spaceID, bookFrom, bookTo, bookRate, rateType, bookDate) Values (" + request.form.get('memberInput') +"," + request.form.get('spaceInput')  + ",'" + request.form.get('startInput') + "','" + request.form.get('endInput') + "'," + request.form.get('rateInput') + ",'" + request.form.get('ratetypeInput') + "','" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "')"
+  query = "insert into bookings (memberID, spaceID, bookFrom, bookTo, bookRate, rateType, bookDate, log_user) Values (" + request.form.get('memberInput') +"," + request.form.get('spaceInput')  + ",'" + request.form.get('startInput') + "','" + request.form.get('endInput') + "'," + request.form.get('rateInput') + ",'" + request.form.get('ratetypeInput') + "','" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "',"+ str(current_user.id) +")"
   bookingID = commit_booking_to_db(query)
 #  query = "insert into ledger (entryDate, bookingID, entryType, entryDesc, entryValue) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "'," + str(bookingID['ID']) + ", 'SECURITY','Security Deposit'," + request.form.get('securityInput')+")"
   #create advance and security invoices only when spaceType is not 'Resource'
   if request.form.get('spaceType') != "Resource":
     invAmt = int(request.form.get('securityInput')) + int( request.form.get('advanceInput'))
-    query = "insert into invoices (createdon,invoicedate,duedate,memberID,header,footer,invoiceamt,amtwithtax,invoicetype) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "','" + datetime.now().strftime("%Y-%m-%d") + "','" + datetime.now().strftime("%Y-%m-%d") + "'," + request.form.get('memberInput') + ",'Invoice for Security and Advance','Please pay by cheque or bank transfer to A/C # XXXXXX'," + str(invAmt) + ","+ str(invAmt) +",'SECURITYADVANCE')"
+    query = "insert into invoices (createdon,invoicedate,duedate,memberID,header,footer,invoiceamt,amtwithtax,invoicetype,log_user) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "','" + datetime.now().strftime("%Y-%m-%d") + "','" + datetime.now().strftime("%Y-%m-%d") + "'," + request.form.get('memberInput') + ",'Invoice for Security and Advance','Please pay by cheque or bank transfer to A/C # XXXXXX'," + str(invAmt) + ","+ str(invAmt) +",'SECURITYADVANCE',"+str(current_user.id)+")"
     invoiceID = commit_invoice_to_db(query)
-    query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values ('" + str(invoiceID['ID']) + "',1,'Security Deposit',0,1," + request.form.get('securityInput') + ",'" + str(bookingID['ID']) + "')"
+    query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID,log_user) values ('" + str(invoiceID['ID']) + "',1,'Security Deposit',0,1," + request.form.get('securityInput') + ",'" + str(bookingID['ID']) + "',"+str(current_user.id)+")"
     result = commit_query_to_db(query)
-    query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID) values ('" + str(invoiceID['ID']) + "',2,'Advance Rent',0,1," + request.form.get('advanceInput') + ",'" + str(bookingID['ID']) + "')"
+    query = "insert into invoiceLI (invoiceID,itemNum,itemDesc,itemRate,itemqty,itemtotal,bookingID,log_user) values ('" + str(invoiceID['ID']) + "',2,'Advance Rent',0,1," + request.form.get('advanceInput') + ",'" + str(bookingID['ID']) + "',"+str(current_user.id)+")"
     result = commit_query_to_db(query)
   #query = "insert into ledger (entryDate, bookingID, entryType, entryDesc, entryValue) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "'," + str(bookingID['ID']) + ", 'ADVANCE','Advance Deposit'," + request.form.get('advanceInput') +")"
     #end if here
@@ -200,7 +200,7 @@ def pay_invoice(id):
 def commit_invoice():
   query = "Update invoices set ispaid = 'Y', instrumentType ='" + request.form.get('instrumentType') +"',instrumentRef='" + request.form.get('instrumentRef') +"',paydate='" +request.form.get('instrumentDate') +"',paidamt =" +request.form.get('amount') +" where ID = " + request.form.get('invoiceID')
   result = commit_query_to_db(query)
-  query = "insert into ledger (entryDate, entryRef, entryType, entryDesc, entryValue) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "'," + request.form.get('invoiceID') + ",'INVOICE', 'Invoice Payment by Customer'," + request.form.get('amount') + ")"
+  query = "insert into ledger (entryDate, entryRef, entryType, entryDesc, entryValue,log_user) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "'," + request.form.get('invoiceID') + ",'INVOICE', 'Invoice Payment by Customer'," + request.form.get('amount') + ","+str(current_user.id)+")"
   result = commit_query_to_db(query)
   return redirect(f"/viewinvoice/{request.form.get('invoiceID')}")
 
@@ -254,14 +254,14 @@ def commit_ledger():
   
   if entryType != "InvDeposit" or entryType != "ODeposit":
     amount = amount * -1
-  
-  query = "insert into ledger (entryDate,entryRef,entryType,entryDesc,entryValue) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "',0,'" + entryType + "','" + description + "'," + str(amount) + ")"
+  #entry ref 0 is for automatic entries
+  query = "insert into ledger (entryDate,entryRef,entryType,entryDesc,entryValue,log_user) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "',0,'" + entryType + "','" + description + "'," + str(amount) + ","+str(current_user.id)+")"
   
   ledgerID = commit_ledger_to_db(query)
   
   # update petty cash register for Petty Cash withdrawls
   if entryType == "Petty":
-    query = "insert into pettycash (entryDate,entryDesc,entryValue,entryRef) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "','Petty Cash addition'," + str(amount * -1) + ",'" + str(ledgerID['ID']) + "')"
+    query = "insert into pettycash (entryDate,entryDesc,entryValue,entryRef,log_user) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "','Petty Cash addition'," + str(amount * -1) + ",'" + str(ledgerID['ID']) + "',"+str(current_user.id)+")"
     result = commit_query_to_db(query)
 
   flash('Entry posted in ledger')
@@ -271,7 +271,7 @@ def commit_ledger():
 @login_required
 def commit_petty():
   amount = int(request.form.get("amount"))
-  query = "insert into pettycash (entryDate,entryDesc,entryValue,entryRef,entryHead) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "','"+ request.form.get("desc") +"'," + str(amount * -1) + ",0,'" + request.form.get("expHead") + "')"
+  query = "insert into pettycash (entryDate,entryDesc,entryValue,entryRef,entryHead,log_user) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "','"+ request.form.get("desc") +"'," + str(amount * -1) + ",0,'" + request.form.get("expHead") + "',"+str(current_user.id)+")"
   result = commit_query_to_db(query)
   flash('Entry posted in Petty Cash Register')
   return redirect("/pettycash")
@@ -285,7 +285,7 @@ def new_extras():
 @app.route("/commitextras",methods=["POST"])
 @login_required
 def commit_extras():
-  query = "insert into extras (entryDate,memberID,extrasDesc,fromDate,toDate,amount,extrasNotes) values ('"+ datetime.now().strftime("%Y-%m-%d") + "'," + request.form.get("memberID") + ",'" + request.form.get("extrasDesc") + "','" + request.form.get("fromDate") + "','" + request.form.get("toDate") + "'," + str(request.form.get("amount")) + ",'" + request.form.get("notes") + "')"
+  query = "insert into extras (entryDate,memberID,extrasDesc,fromDate,toDate,amount,extrasNotes,log_user) values ('"+ datetime.now().strftime("%Y-%m-%d") + "'," + request.form.get("memberID") + ",'" + request.form.get("extrasDesc") + "','" + request.form.get("fromDate") + "','" + request.form.get("toDate") + "'," + str(request.form.get("amount")) + ",'" + request.form.get("notes") + "',"+str(current_user.id)+")"
   result = commit_query_to_db(query)
   flash('Entry posted in Extras Register')
   return redirect("/extras")
