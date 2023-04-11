@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,26 +8,28 @@
   </head>
   
   <body>
+    
     {% include 'header.html' %}
+    
     <div class="container">
       <table class="table table-striped">
         <thead class="border border-warning">
           <tr>
             <th scope="col"><h5>ID</h5></th>
-            <th scope="col"><h5>Company</h5></th>
-            <th scope="col"><h5>Contact Name</h5></th>
-            <th scope="col"><h5>Phone</h5></th>
-            <th scope="col"><h5>Email</h5></th>
-            <th scope="col"><h5>CNIC</h5></th>
-            <th scope="col"><a class="btn btn-warning" href="/addmember" role="button">Add member</a></th>
+            <th scope="col"><h5>Type</h5></th>
+            <th scope="col"><h5>Description</h5></th>
+            <th scope="col"><h5>Initiated By</h5></th>
+            <th scope="col"><h5>Assigned To</h5></th>
+            <th scope="col"><h5>Creation Date</h5></th>
+           <!-- <th scope="col"><h5>Closing Note</h5></th>-->
+            <th scope="col"><a class="btn btn-warning" href="/addspace" role="button">New Ticket</a></th>
           </tr>
         </thead>
         <tbody>
-          {% include 'tablemember.html' %}
+          {% include 'tabletickets.html' %}
         </tbody>
       </table>
        {% include 'footer.html' %}
     </div>
   </body>
-
 </html>
