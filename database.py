@@ -140,6 +140,28 @@ def load_invoiceLI_from_db(id):
       LIs.append(row._mapping)
     return LIs
 
+
+def load_tickets_from_db():
+  with engine.connect() as conn:
+   # result = conn.execute(text("select tickets.*,members.name from tickets,members where members.ID = tickets.memberID))
+    result = conn.execute(text("select tickets.*,members.name from tickets LEFT JOIN members on tickets.memberID = members.ID"))
+    tick_list = result.all()
+    tickets = []
+    for row in tick_list:
+      tickets.append(row._mapping)
+    return tickets
+
+def load_ticket_from_db(id):
+  with engine.connect() as conn:
+  #  query = f"select tickets.*,members.name from tickets,members where tickets.ID = {id} and members.ID = tickets.memberID"
+    query = f"select tickets.*,members.name from tickets LEFT JOIN members on tickets.memberID = members.ID where tickets.ID = {id} "
+    result = conn.execute(text(query))
+    rows = result.all()
+    if len(rows) == 0:
+      return None
+    else:
+      return rows[0]._mapping
+  
 def load_active_members_from_db(query):
   with engine.connect() as conn:
     result = conn.execute(text(query))
@@ -149,6 +171,15 @@ def load_active_members_from_db(query):
       members.append(row._mapping)
     return members
 
+def load_staffs_from_db():
+  with engine.connect() as conn:
+    result = conn.execute(text("select * from user"))
+    staff_list = result.all()
+    staffs = []
+    for row in staff_list:
+      staffs.append(row._mapping)
+    return staffs
+  
 def creat_monthly_invoice(startdate,enddate, memberid):
   
   startdate = datetime.strptime(startdate, '%Y-%m-%d')

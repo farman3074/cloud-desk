@@ -1,7 +1,8 @@
 from flask import Flask,render_template,request,redirect,flash
 #import datafile
 from datetime import datetime
-from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db,load_active_members_from_db,creat_monthly_invoice,commit_ledger_to_db,load_bookings_bymember_from_db
+from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db,load_active_members_from_db,creat_monthly_invoice,commit_ledger_to_db,load_bookings_bymember_from_db,load_staffs_from_db,load_ticket_from_db,load_tickets_from_db
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager
 from flask_login import login_user, login_required, logout_user, current_user
@@ -293,7 +294,49 @@ def commit_extras():
 @app.route("/maintenance")
 @login_required
 def maintenance_page():
-  return render_template("maintenance.html", title="Maintenace Management", userName=current_user.userEmail, userGroup = current_user.userGroup)
+  tickets = load_tickets_from_db()
+  staffs = load_staffs_from_db()
+  staff_dict = {}
+  for staff in staffs:
+    staff_dict[staff['id']] = staff['userName']
+    #print(staff_dict)
+  return render_template("maintenance.html", title="Maintenace Management", userName=current_user.userEmail, userGroup = current_user.userGroup, tickets=tickets, staff_dict=staff_dict)
+
+@app.route("/addticket")
+@login_required
+def add_ticket():
+  query = "SELECT ID,name FROM members where members.ID in (select memberID from bookings where bookings.bookto > '"+ datetime.now().strftime("%Y-%m-%d") + "')"
+  members = load_active_members_from_db(query)
+  staffs = load_staffs_from_db()
+  return render_template("addticket.html", title="Generate New Ticket", members=members,staffs=staffs)
+
+@app.route("/committicket",methods=["POST"])
+@login_required
+def commit_ticket():
+  query = "insert into tickets (createdOn, createdBy, assignedTo, isOpen, description, type, memberID, priority) values ('" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "'," + str(current_user.id) + "," + request.form.get("assignedInput") + ",'Yes','" + request.form.get("descInput") + "','" + request.form.get("typeInput") + "','" + request.form.get("memberInput") + "','" + request.form.get("priorityInput") + "')"
+  result = commit_query_to_db(query)
+  flash('New Ticket Generated')
+  return redirect("/maintenance")
+
+@app.route("/viewticket/<id>")
+@login_required
+def show_ticket(id):
+  ticket = load_ticket_from_db(id)
+  staffs = load_staffs_from_db()
+  staff_dict = {}
+  for staff in staffs:
+    staff_dict[staff['id']] = staff['userName']
+  return render_template("viewticket.html", title="View Ticket",ticket=ticket,staff_dict=staff_dict)
+
+
+@app.route("/closeticket",methods=["POST"])
+@login_required
+def close_ticket():
+  query = "Update tickets set closingNote = '" + request.form.get("closingNote") + "', reason = '" + request.form.get("closingType") + "', isOpen = 'No', closedBy = " + str(current_user.id) + ", closedOn = '" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "' where ID = '" + str(request.form.get("ticketID")) + "'"
+  result = commit_query_to_db(query)
+  flash('Ticket Closed')
+  return redirect("/maintenance")
+  
 
 
 @app.route("/logout")
