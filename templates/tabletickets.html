@@ -4,16 +4,18 @@
     <tr>
       <th scope="row">{{ ticket['ID'] }}</th>
       <td>{{ ticket['type'] }}</td>
+       <td>{% if '1' == ticket['priority'] %} Urgent {% else %} Normal {% endif %}</td>
       <td>{{ ticket['description'] }}</td>
-      <td>{{ ticket['createdBy'] }}</td>
-      <td>{{ ticket['assignedTo'] }}</td>
+      <td>{{ staff_dict[ticket['createdBy']] }}</td>
+      <td>{{ staff_dict[ticket['assignedTo']] }}</td>
+      <td>{{ ticket['name'] }}</td>
       <td>{{ ticket['createdOn'] }}</td>
       <!--<td>{{ ticket['closingNote'] }}</td>-->
       <td>
         {% if "Yes" == ticket['isOpen'] %}
-          <a class="btn btn-warning" href="/closeticket" role="button">Close</a>
+          <a class="btn btn-danger" href="/viewticket/{{ticket['ID']}}" role="button">Close</a>
         {% else %}
-          <a class="btn btn-success" href="/viewticket" role="button">View</a>
+          <a class="btn btn-success" href="/viewticket/{{ticket['ID']}}" role="button">View</a>
         {% endif %}
       </td>
    
