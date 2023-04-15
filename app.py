@@ -1,7 +1,7 @@
 from flask import Flask,render_template,request,redirect,flash
 #import datafile
 from datetime import datetime
-from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db,load_active_members_from_db,creat_monthly_invoice,commit_ledger_to_db,load_bookings_bymember_from_db,load_staffs_from_db,load_ticket_from_db,load_tickets_from_db
+from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db,load_active_members_from_db,creat_monthly_invoice,commit_ledger_to_db,load_bookings_bymember_from_db,load_staffs_from_db,load_ticket_from_db,load_tickets_from_db,load_results_from_db
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager
@@ -226,7 +226,8 @@ def new_invoice():
 def show_reporting():
   currentDate = datetime.now()
   currentMonth = str(currentDate.year) + "-" + str(currentDate.month)
-  return render_template("reporting.html", title="Reporting", userName=current_user.userEmail, userGroup = current_user.userGroup, currentMonth = currentMonth)
+  staffs = load_staffs_from_db()
+  return render_template("reporting.html", title="Reporting", userName=current_user.userEmail, userGroup = current_user.userGroup, currentMonth = currentMonth, staffs=staffs)
 
 @app.route("/backoffice")
 @login_required
@@ -344,7 +345,38 @@ def close_ticket():
 def logout():
   logout_user()
   return redirect("/")
-
+  
+@app.route("/reporttickets",methods=["POST"])
+def ticket_report():
+  #generates ticket report for the assignedTo id or all if id = 0
+  id = request.form.get('userID')
+  if request.form.get('allOrOneRadio'):
+    query = "SELECT COUNT(tickets.id) as counter, assignedTo, user.userName FROM clouddesk.tickets JOIN clouddesk.user ON user.ID = assignedTo group by assignedTo order by assignedTo"
+    userGroups = load_results_from_db(query)
+    query = "Select count(tickets.id) as counter, assignedTo from tickets where isOpen = 'Yes' group by assignedTo"
+      #print(query)
+    closeCount = load_results_from_db(query)
+  
+    query = "Select tickets.*, members.name from tickets LEFT JOIN members ON members.ID = tickets.memberID where isOpen = 'Yes'"
+    openTickets = load_results_from_db(query)
+  
+  else:
+    query = "SELECT COUNT(tickets.id) as counter, assignedTo, user.userName FROM clouddesk.tickets JOIN clouddesk.user ON user.ID = assignedTo where assignedTo = " + str(id) + " group by assignedTo order by assignedTo"
+    userGroups = load_results_from_db(query)
+    query = "Select count(tickets.id) as counter, assignedTo from tickets where assignedTo = " + str(id) + " and isOpen = 'Yes' group by assignedTo"
+      #print(query)
+    closeCount = load_results_from_db(query)
+  
+    query = "Select tickets.*, members.name from tickets LEFT JOIN members ON members.ID = tickets.memberID where assignedTo = " + str(id) + " and isOpen = 'Yes'"
+    openTickets = load_results_from_db(query)
+      
+  staffs = load_staffs_from_db()
+  staff_dict = {}
+  for staff in staffs:
+    staff_dict[staff['id']] = staff['userName']
+  
+  return render_template("reportTickets.html", title="Tickets Report",userGroups=userGroups,closeCount=closeCount,openTickets=openTickets,staff_dict=staff_dict)
+  
 
 print(__name__)
 if __name__ == "__main__" :
