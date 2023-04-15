@@ -83,8 +83,16 @@ def commit_ledger_to_db(query):
     rows = result.all()
     return rows[0]._mapping
 
-
-
+def load_results_from_db(query):
+  with engine.connect() as conn:
+    result = conn.execute(text(query))
+    rows = result.all()
+    results = []
+    for row in rows:
+      results.append(row._mapping)
+    return results
+    
+    
 def commit_query_to_db(query):
   with engine.connect() as conn:
     result = conn.execute(text(query))
