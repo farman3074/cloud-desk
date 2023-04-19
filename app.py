@@ -1,7 +1,7 @@
 from flask import Flask,render_template,request,redirect,flash
 #import datafile
 from datetime import datetime
-from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db,load_active_members_from_db,creat_monthly_invoice,commit_ledger_to_db,load_bookings_bymember_from_db,load_staffs_from_db,load_ticket_from_db,load_tickets_from_db,load_results_from_db
+from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db,load_active_members_from_db,creat_monthly_invoice,commit_ledger_to_db,load_bookings_bymember_from_db,load_staffs_from_db,load_ticket_from_db,load_tickets_from_db,load_results_from_db,update_db_lastlogin
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager
@@ -27,6 +27,7 @@ class User(UserMixin, db.Model):
   userPWD = db.Column(db.String(45))
   userGroup = db.Column(db.String(45))
   userEmail = db.Column(db.String(45), unique=True)
+  lastLogin = db.Column(db.DateTime)
   
 
 login_manager = LoginManager()
@@ -57,6 +58,7 @@ def check_login():
     return redirect("/") 
   
   login_user(user, remember=remember)
+  update_db_lastlogin(user)
   return redirect("/dashboard")
   
 
