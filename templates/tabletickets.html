@@ -4,7 +4,7 @@
     <tr>
       <th scope="row">{{ ticket['ID'] }}</th>
       <td>{{ ticket['type'] }}</td>
-       <td>{% if '1' == ticket['priority'] %} Urgent {% else %} Normal {% endif %}</td>
+       <td>{% if 1 == ticket['priority'] %} Urgent {% else %} Normal {% endif %}</td>
       <td>{{ ticket['description'] }}</td>
       <td>{{ staff_dict[ticket['createdBy']] }}</td>
       <td>{{ staff_dict[ticket['assignedTo']] }}</td>
