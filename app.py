@@ -352,14 +352,14 @@ def logout():
 def ticket_report():
   #generates ticket report for the assignedTo id or all if id = 0
   id = request.form.get('userID')
-  if request.form.get('allOrOneRadio'):
+  if id == None or id == "0": ##request.form.get('allOrOneRadio1'):
     query = "SELECT COUNT(tickets.id) as counter, assignedTo, user.userName FROM clouddesk.tickets JOIN clouddesk.user ON user.ID = assignedTo group by assignedTo order by assignedTo"
     userGroups = load_results_from_db(query)
     query = "Select count(tickets.id) as counter, assignedTo from tickets where isOpen = 'Yes' group by assignedTo"
       #print(query)
     closeCount = load_results_from_db(query)
   
-    query = "Select tickets.*, members.name from tickets LEFT JOIN members ON members.ID = tickets.memberID where isOpen = 'Yes'"
+    query = "Select tickets.* , datediff(CURDATE(),createdOn) as overdue, members.name from tickets LEFT JOIN members ON members.ID = tickets.memberID where isOpen = 'Yes'"
     openTickets = load_results_from_db(query)
   
   else:
@@ -369,7 +369,7 @@ def ticket_report():
       #print(query)
     closeCount = load_results_from_db(query)
   
-    query = "Select tickets.*, members.name from tickets LEFT JOIN members ON members.ID = tickets.memberID where assignedTo = " + str(id) + " and isOpen = 'Yes'"
+    query = "Select tickets.*, datediff(CURDATE(),createdOn) as overdue, members.name from tickets LEFT JOIN members ON members.ID = tickets.memberID where assignedTo = " + str(id) + " and isOpen = 'Yes'"
     openTickets = load_results_from_db(query)
       
   staffs = load_staffs_from_db()

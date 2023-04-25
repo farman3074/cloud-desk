@@ -77,6 +77,7 @@
             <th scope="col"><h5>Initiated By</h5></th>
             <th scope="col"><h5>Affectee</h5></th>
             <th scope="col"><h5>Creation Date</h5></th>
+          <th scope="col"><h5>Days Overdue</h5></th>
         </tr>
         </thead>
         <tbody>
@@ -91,6 +92,7 @@
             <td>{{ staff_dict[ticket['createdBy']] }}</td>
             <td>{{ ticket['name'] }}</td>
             <td>{{ ticket['createdOn'] }}</td>
+            <td>{{ ticket['overdue'] }}</td>
             {% endif %}
         {% endfor %}
         </tbody>
