@@ -379,6 +379,24 @@ def ticket_report():
   
   return render_template("reportTickets.html", title="Tickets Report",userGroups=userGroups,closeCount=closeCount,openTickets=openTickets,staff_dict=staff_dict)
   
+@app.route("/reportbookings",methods=["POST"])
+def bookings_report():
+  currDate = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+  if request.form.get("bookingType") == "0":
+    #active bookings only
+    title = "Active Bookings Report"
+    query = "Select bookings.*,spaces.name,spaces.type from bookings,spaces where bookings.bookFrom <= '" + currDate + "' and bookings.bookTo >= '" + currDate + "'and bookings.spaceID = spaces.ID"
+  else:
+    title = "All Bookings Report"
+    query = "Select bookings.*,spaces.name,spaces.type from bookings,spaces where bookings.spaceID = spaces.ID"
+  
+  results = load_results_from_db(query)
+  members = load_members_from_db()
+  member_dict = {}
+  for member in members:
+    member_dict[member['ID']] = member['company']
+  
+  return render_template("reportbookings.html", title=title, results = results, members = member_dict)
 
 print(__name__)
 if __name__ == "__main__" :
