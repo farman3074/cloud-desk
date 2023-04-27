@@ -67,6 +67,21 @@
             </td>
           </tr>
           <tr>
+            <th scope = "row">Bookings Report</th>
+            <td>Shows all or active bookings in the system</td>
+            <td>
+              <form action="/reportbookings" method="POST">
+                <div class="form-group mb-2">
+                   <select class="form-select md-4" aria-label="select" name = "bookingType" id = "bookingType">
+            <option value = "0" selected>Active Bookings</option>    
+            <option value = "1">All Bookings</option>    
+          </select>
+                <button type="submit" class="btn btn-primary">Generate</button>
+                </div>
+              </form>
+            </td>
+          </tr>
+          <tr>
             <th scope = "row">Petty Cash Report</th>
             <td>Generate Petty Cash entry report for a period</td>
             <td>
