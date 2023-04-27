@@ -115,7 +115,7 @@ def load_bookings_from_db(id):
 
 def load_bookings_bymember_from_db(id):
   with engine.connect() as conn:
-    query = f"SELECT * FROM clouddesk.bookings, clouddesk.spaces where  bookings.memberID = { id } and clouddesk.bookings.ID = clouddesk.spaces.ID"
+    query = f"SELECT * FROM clouddesk.bookings, clouddesk.spaces where  bookings.memberID = { id } and clouddesk.bookings.spaceID = clouddesk.spaces.ID"
     result = conn.execute(text(query))
     rows = result.all()
     bookings = []
