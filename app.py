@@ -1,7 +1,7 @@
 from flask import Flask,render_template,request,redirect,flash
 #import datafile
 from datetime import datetime
-from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db,load_active_members_from_db,creat_monthly_invoice,commit_ledger_to_db,load_bookings_bymember_from_db,load_staffs_from_db,load_ticket_from_db,load_tickets_from_db,load_results_from_db,update_db_lastlogin
+from database import load_members_from_db,load_member_from_db, commit_member_to_db, load_spaces_from_db, load_space_from_db, commit_space_to_db, commit_booking_to_db,commit_query_to_db,load_bookings_from_db,commit_invoice_to_db,load_invoices_from_db,load_invoiceLI_from_db,load_invoice_from_db,load_active_members_from_db,creat_monthly_invoice,commit_ledger_to_db,load_bookings_bymember_from_db,load_staffs_from_db,load_ticket_from_db,load_tickets_from_db,load_results_from_db,update_db_lastlogin,get_opening_bal,get_entries_from_db
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager
@@ -397,6 +397,37 @@ def bookings_report():
     member_dict[member['ID']] = member['company']
   
   return render_template("reportbookings.html", title=title, results = results, members = member_dict)
+
+@app.route("/reportpetty",methods=["POST"])
+def petty_report():
+  table = "pettycash"
+  period = request.form.get('period')
+  openBal = get_opening_bal(table,period)
+  entries = get_entries_from_db(table, period)
+  closBal = openBal
+  for entry in entries:
+    closBal = closBal + entry['entryValue']   
+  return render_template("reportpetty.html", title="Petty Cash Report", openBal = openBal, entries = entries, period = period, closBal=closBal)
+
+@app.route("/reportledger",methods=["POST"])
+def ledger_report():
+  table = "ledger"
+  period = request.form.get('period')
+  openBal = get_opening_bal(table,period)
+  entries = get_entries_from_db(table, period)
+  closBal = openBal
+  invTexts = {}
+  for entry in entries:
+    closBal = closBal + entry['entryValue']
+    if entry['entryType'] == "INVOICE":
+      query = "Select members.company ,instrumentType from invoices LEFT JOIN members ON invoices.memberID = members.ID where invoices.ID = " + str(entry['entryRef'])
+      results = load_results_from_db(query)
+      for result in results:
+        invTexts[entry['entryRef']] = result['instrumentType'] + " by " + result['company']
+   
+  return render_template("reportledger.html", title="Ledger Report", openBal = openBal, entries = entries, period = period, closBal=closBal,invTexts=invTexts)
+
+
 
 print(__name__)
 if __name__ == "__main__" :

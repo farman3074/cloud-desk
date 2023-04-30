@@ -184,6 +184,47 @@ def load_active_members_from_db(query):
       members.append(row._mapping)
     return members
 
+def get_opening_bal(table,period):
+  #startdate = datetime.strptime(period, '%Y-%m')
+  startdate = period.split("-")
+  currMonth = int(startdate[1])
+  currYear = int(startdate[0])
+  firstDayDate = date(currYear, currMonth, 1)
+  #print(currMonth)
+  with engine.connect() as conn:
+    query = "select sum(entryValue) as balance from " + table + " where entryDate < '" + firstDayDate.strftime("%Y-%m-%d") + "'"
+    result = conn.execute(text(query))
+    rows = result.all()
+    if len(rows) == 0:
+      return 0
+    else:
+      result = rows[0]._mapping
+      balance = result['balance']
+      if balance == None:
+        balance = 0
+      return balance
+
+def get_entries_from_db(table,period):
+  #startdate = datetime.strptime(period, '%Y-%m')
+  #currMonth = startdate.month
+  #currYear = startdate.year
+  startdate = period.split("-")
+  currMonth = int(startdate[1])
+  currYear = int(startdate[0])
+  firstDayDate = datetime(currYear, currMonth, 1)
+  monthCal = calendar.monthrange(currYear,currMonth)
+  numDays = monthCal[1]
+  lastDayDate = datetime(currYear, currMonth, numDays)
+  with engine.connect() as conn:
+    query = "select * from " + table + " where entryDate >= '" + firstDayDate.strftime("%Y-%m-%d") + "' and entryDate <= '" + lastDayDate.strftime("%Y-%m-%d 23:59:59") + "' order by entryDate"
+    result = conn.execute(text(query))
+    rows = result.all()
+    entries = []
+    for row in rows:
+      entries.append(row._mapping)
+    return entries
+
+
 def load_staffs_from_db():
   with engine.connect() as conn:
     result = conn.execute(text("select * from user"))
