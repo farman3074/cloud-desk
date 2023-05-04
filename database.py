@@ -320,11 +320,12 @@ def creat_monthly_invoice(startdate,enddate, memberid):
               firstDayDate = date(currYear, currMonth, 1)
               lastDayDate = date(toYear,toMonth,toDay)
 
-            if bookYear == currYear and bookMonth == currMonth :
+            # commented becasue it is clashing with the multi rate booking cases which are currently being handled as two bookings
+         #   if bookYear == currYear and bookMonth == currMonth :
               #case for accounting for advances - assuming no booking is done without advanes
-              billDays = 0
-              firstDayDate = date(currYear, currMonth, 1)
-              lastDayDate = date(currYear, currMonth, numDays)
+          #    billDays = 0
+          #    firstDayDate = date(currYear, currMonth, 1)
+          #    lastDayDate = date(currYear, currMonth, numDays)
               
           
             if row['rateType'] == "MONTHLY":
