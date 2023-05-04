@@ -306,8 +306,11 @@ def creat_monthly_invoice(startdate,enddate, memberid):
 
               numDaysLast = (calendar.monthrange(bookYear,bookMonth))[1]
               billDays = numDaysLast - bookDay + 1
-              firstDayDate = bookFrom
-              lastDayDate = date(bookYear,bookMonth,numDaysLast)
+              #firstDayDate = bookFrom
+              #lastDayDate = date(bookYear,bookMonth,numDaysLast)
+            #ammended to avoid printing last month dates on invoice item
+              firstDayDate = date(currYear, currMonth, 1)
+              lastDayDate = date(currYear, currMonth, billDays)
             
           
             if toYear == currYear and toMonth == currMonth:
@@ -316,6 +319,13 @@ def creat_monthly_invoice(startdate,enddate, memberid):
               billDays = toDay
               firstDayDate = date(currYear, currMonth, 1)
               lastDayDate = date(toYear,toMonth,toDay)
+
+            if bookYear == currYear and bookMonth == currMonth :
+              #case for accounting for advances - assuming no booking is done without advanes
+              billDays = 0
+              firstDayDate = date(currYear, currMonth, 1)
+              lastDayDate = date(currYear, currMonth, numDays)
+              
           
             if row['rateType'] == "MONTHLY":
               rental = (row['bookRate'] / numDaysLast) * billDays
