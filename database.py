@@ -310,6 +310,9 @@ def creat_monthly_invoice(startdate,enddate, memberid):
               #lastDayDate = date(bookYear,bookMonth,numDaysLast)
             #ammended to avoid printing last month dates on invoice item
               firstDayDate = date(currYear, currMonth, 1)
+              monthCal = calendar.monthrange(currYear,currMonth)
+              if billDays > monthCal[1]:
+                billDays = monthCal[1]
               lastDayDate = date(currYear, currMonth, billDays)
             
           
