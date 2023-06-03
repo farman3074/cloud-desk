@@ -312,7 +312,7 @@ def creat_monthly_invoice(startdate,enddate, memberid):
               firstDayDate = date(currYear, currMonth, 1)
               monthCal = calendar.monthrange(currYear,currMonth)
               if billDays > monthCal[1]:
-                billDays = monthCal[1]
+                lastDayDate = date(currYear, currMonth, monthCal[1])
               lastDayDate = date(currYear, currMonth, billDays)
             
           
